@@ -1,0 +1,260 @@
+﻿@using BSG.ADInventory.Resources
+@{ ViewBag.EntityName = "InternalEntrance";}
+<table id="data-table-@ViewBag.EntityName" class="display nowrap table-hover table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayName(Resource.Proceedings)</th>
+            <th>@Html.DisplayName(Resource.Id)</th>
+            <th>@Html.DisplayName(Resource.DocNo)</th>
+            <th>@Html.DisplayName(Resource.ReferenceInternalDocNo)</th>
+            <th>@Html.DisplayName(Resource.CarType)</th>
+            <th>@Html.DisplayName(Resource.PlateNumber)</th>
+            <th>@Html.DisplayName(Resource.DriverName)</th>
+            <th>@Html.DisplayName(Resource.Source)</th>
+            <th>@Html.DisplayName(Resource.Operator)</th>
+            <th>@Html.DisplayName(Resource.CreateTime)</th>
+            <th>@Html.DisplayName(Resource.Attachments)</th>
+            <th>@Html.DisplayName(Resource.Status)</th>
+        </tr>
+
+    </thead>
+</table>
+@*<script src="~/Content/plugins/jquery-validation/jquery.validate.unobtrusive.min.js"></script>*@
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var entity = '@ViewBag.EntityName';
+        $('#data-table-' + entity + ' thead tr')
+                .clone(true)
+                .addClass('filters')
+            .appendTo('#data-table-' + entity + ' thead');
+
+        table = $('#data-table-' + entity).DataTable({
+             orderCellsTop: true,
+            fixedHeader: true,
+            scrollX: true,
+            response: true,
+            lengthMenu: [[10, 25, 50, 100, 1000], [10, 25, 50, 100, 1000]],
+            dom: 'lfBrtip',
+                buttons: [
+
+                    { extend: 'copy', exportOptions: { columns: ':visible' } },
+                    { extend: 'excel', exportOptions: {columns: ':visible' } },
+                    {
+                        extend: 'print',
+                        exportOptions: { columns: ':visible' },
+                        title: '<div><p class="text-center">@Resource.List گزارش ورود</p><hr /></div>',
+                    },
+                    'colvis',
+                    {
+                        text: '<i class="fal fa-refresh fa-md" data-toggle="tooltip" data-placement="bottom" title="@Resource.Refresh"></i>',
+                        action: function (e, dt, node, config) {
+                            $('#data-table-' + entity).dataTable().api().ajax.reload();
+                        }
+                    },
+                    {
+                        text: '<i class="fas fa-plus fa-md text-success" data-toggle="tooltip" data-placement="bottom" title="@Resource.Create"></i>',
+                        action: function (e, dt, node, config) {
+                            crudActionLocal(0, 'ایجاد گزارش ورود داخلی', 'modal-xl')
+                        }
+                    },
+                ],
+                retrieve: true,
+                Response: true,
+                order: [0, 'asc'],
+                bProcessing: true,
+                language: { url: '/Content/plugins/datatables/fa.json' },
+                bFilter: true,
+                bServerSide: true,
+            sAjaxSource: "/InvDoc/GetDataListInternalEntranceDoc",
+            fnCreatedRow: function (nRow, aData, iDataIndex) { $(nRow).attr('id', 'row-' + entity + '-' + aData['Id']); },
+
+
+                aoColumns: [
+                    {
+                        data: 'Id',
+                        render: function (data, type, row, meta) {
+                            return '<div class="btn-group show  table-action-menu">' +
+                                '<button type="button" class="btn btn-default dropdown-toggle text-center" data-toggle="dropdown" aria-expanded="true">' +
+                                '<span class="fas fa-ellipsis-h fa-sm text-black-50"></span>' +
+                                '</button>' +
+                                '<div class="dropdown-menu" role="menu">' +
+                                '<a class="dropdown-item" href="#" onclick="Print(' + data + ')"><i class="fal fa-print fa-md"></i> @Resource.Print</a>' +
+                                (row.InvDocStatus == 1 ? ('<a class="dropdown-item" href="#" onclick="crudActionLocal('+ data + ',\'ویرایش گزارش ورود داخلی\',\'modal-xl\')"><i class="fal fa-edit fa-md"></i> @Resource.Edit</a>') : '') +
+                                '<a class="dropdown-item" href="#" onclick="confirmDoc(' + data + ',\'' + entity + '\')"><i class="fal fa-check fa-md text-green"></i> @Resource.MakeDocDefinitive</a>' +
+                                '<a class="dropdown-item" href="#" onclick="uploadFile(' + data + ',\'' + entity + '\')"><i class="fal fa-paperclip fa-md"></i> @Resource.UploadedFile</a>' +
+                                '<a class="dropdown-item" href="#" onclick="DeleteItem(' + data + ',\'InvDoc\',\'' + entity + '\')"><i class="fal fa-trash-alt fa-md"></i> @Resource.Delete</a>' +
+                                '</div>' +
+                                '</div>'
+                        }
+                        , class: 'action-col'
+                    },
+                    { data: 'Id' },
+                    { data: 'DocNo' },
+                    { data: 'ReferenceInternalDocNo' },
+                    { data: 'CarType' },
+                    { data: 'CarPlateNumer' },
+                    { data: 'DriverName' },
+                    { data: 'Source' },
+                    { data: 'Operator' },
+                    {
+                        data: 'CreateTime',
+                        className: 'readonly not-allowed',
+                        render: function (data, type, full) {
+                            if (data != null) {
+                                var dtStart = new Date(parseInt(data.substr(6)));
+                                return dtStart.toLocaleString('fa-IR');
+                            } else {
+                                return "";
+                            }
+                        }
+                    },
+                    {
+                        data: 'Attachments',
+                        render: function (data, type, row, meta) {
+                            return data > 0 ? '<i class="fas fa-paperclip fa-lg text-blue" onclick="showAttachments(' + row.Id + ')"></i> ' + data : '';
+                        }
+                    },
+                    {
+                        data: 'InvDocStatus',
+                        render: function (data, type, full, meta) {
+                            return data == 1 ? '<i class="fa-duotone fa-arrows-spin fa-spin fa-lg text-danger"></i>' : '<i class="fa-duotone fa-circle-check fa-lg text-success"></i>';
+                        }
+                    },
+
+            ],
+            columnDefs: [
+                { "width": "50px", "targets": 0 },
+                { "width": "50px", "targets": 1 }
+            ],
+                
+                initComplete: function () {
+
+                    var api = this.api();
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            var cell = $('#data-table-' + entity + '_wrapper .filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+                            var title = $(cell).text();
+                            $(cell).html('<input type="text" class="form-control" placeholder=" " />');
+                            $(
+                                'input',
+                                $('#data-table-' + entity + ' .filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('change', function (e) {
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})';
+
+                                    var cursorPosition = this.selectionStart;
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value != ''
+                                                ? regexr.replace('{search}', this.value).replace('(', '').replace(')','')
+                                                : '',
+                                            this.value != '',
+                                            this.value == ''
+                                        )
+                                        .draw();
+                                })
+                                .on('keydown', function (e) {
+                                    if (e.key == '13') {
+                                        e.stopPropagation();
+
+                                        $(this).trigger('change');
+                                        $(this)
+                                            .focus()[0]
+                                            .setSelectionRange(cursorPosition, cursorPosition);
+                                    }
+                                });
+                        });
+                    $("div.card-header #card-buttons").html('');
+                    $('#data-table-' + entity + '_wrapper > .dt-buttons').appendTo('div.card-header #card-buttons');
+                    $('.dt-buttons').addClass('float-left dt-buttons-show');
+                    $('.dt-buttons button').addClass('btn btn-sm btn-light');
+                    $('#data-table-' + entity + '_wrapper tr.filters').fadeIn(1000);
+                    table.columns.adjust();
+                },
+            });
+
+
+        });
+
+    function crudActionLocal(id, title, modalSize) {
+
+        $.ajax({
+            cache: false,
+            type: 'GET',
+            url: 'InvDoc/GetInternalEntranceDoc?id=' + id ,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-desktop").removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-rectangle-history-circle-plus fa-lg"></i> ' + title);
+                $('#modal-content-body').html(data);
+                if (modalSize != '') {
+                    $('#modal-content .modal-dialog').addClass(modalSize);
+                }
+                $('#modal-content').modal('toggle');
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-desktop").addClass("hidden");
+                if ($.validator.unobtrusive != undefined) {
+                    $.validator.unobtrusive.parse("#partialForm");
+                }
+                else { toastr.error('Form validator not found.') }
+            }
+        });
+    }
+
+     function Print(id)
+    {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Report/PrintInvDoc?id="+id,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading").removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-print fa-lg"></i> چاپ سند');
+                $('#modal-content-body').html(data);
+
+                $('#modalBtnCancel').removeClass('hidden');
+
+                $('#modal-content .modal-dialog').addClass('modal-xl');
+                $('#modal-content').modal('toggle');
+                //$(function () {
+                //    $('#modalBtnPrint').unbind('click').bind('click', function (e) {
+                //        SaveInvDoc();
+                //    });
+                //});
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading").addClass("hidden");
+            }
+
+        });
+
+    }
+
+
+
+</script>
+

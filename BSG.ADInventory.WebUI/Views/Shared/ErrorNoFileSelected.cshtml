@@ -1,0 +1,19 @@
+@using CCUCar.Resources
+@{
+    ViewBag.Title = Resource.PleaseSelectFile;
+}
+
+<h2>@Resource.PleaseSelectFile</h2>
+<div class="message">
+    <div class="command">
+        <a href="javascript:history.go(-1);">@Resource.Return</a>
+    </div>
+    @*@this.Html.Raw(this.Model.Description)*@
+
+    @*@if (this.Model.HasReturnCommand)
+    {
+        <div class="command">
+            <a href="javascript:history.go(-1);">@Resource.Return</a>
+        </div>
+    }*@
+</div>

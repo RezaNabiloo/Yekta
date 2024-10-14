@@ -1,0 +1,74 @@
+﻿@using BSG.ADInventory.Resources
+<!-- Main Sidebar Container -->
+
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="@Url.Action("Index","Home")" class="brand-link">
+        <img src="~/Content/dist/img/CompanyLogo.png" alt="BidarSoft" class="brand-image">
+        <!--<span class="brand-text" style="letter-spacing:1px; font-size:16px;">-->@*<span class="text-bold"><strong>EASY</strong></span>WEB*@ <!--<span class="text-bold">Maham</span> <small>CMS</small></span>-->
+        <span class="brand-text" style="font-size:18px; font-weight:bold; letter-spacing:0px">مهــام<small style="font-size:11px; font-weight:normal"> (شرکت زنگان پرشیا)</small></span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="~/Images/Public/user.png" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">کاربر : <span id="profileUserInfo"></span></a>
+            </div>
+        </div>
+
+        <!-- SidebarSearch Form -->
+        <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="@Resource.Search" aria-label="Search" autocomplete="off">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar btn-xs">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+    with font-awesome or any other icon font library -->
+                @Html.Action("UserAccessMenu", "Menu")
+                <li class="nav-item">
+                    <a href="#" class="nav-link" >
+                        <i class="nav-icon fad fa-user-lock"></i>
+                        <p>
+                            پروفایل
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item draggable-MenuItem" id="mnu-profile">
+                            <a href="@Url.Action("ChangePassword","Account")" class="nav-link">
+                                <i class="nav-icon far fa-key-skeleton"></i>
+                                <p>@Resource.ChangePassword</p>
+                            </a>
+                        </li>                        
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" onclick="function logOut() { window.location = '/Account/Logout' }; logOut();" class="nav-link">
+                        <i class="nav-icon fad fa-power-off"></i>
+
+                        <p>@Resource.Exit</p>
+                    </a>
+
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

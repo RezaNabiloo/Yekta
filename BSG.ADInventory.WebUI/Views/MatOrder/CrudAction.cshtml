@@ -1,0 +1,269 @@
+﻿@using BSG.ADInventory.Resources
+@using BSG.ADInventory.Common.Enum
+@model BSG.ADInventory.Models.MatOrder.MatOrderCEDTO
+@{ViewBag.EntityName = "MatOrder";}
+<form id="@ViewBag.EntityName">
+    <div class="row">
+        <div class="col-md-4">
+            @Html.HiddenFor(model => model.Id)
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.ProjectId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.ProjectId, (SelectList)this.ViewBag.ProjectIds, new { @class = "form-control" })
+                    @this.Html.ValidationMessageFor(model => model.ProjectId)
+                </div>
+            </div>
+
+
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.RequiredDate, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequiredDate, new { htmlAttributes = new { @class = "form-control datetimePicker" } })
+                    @this.Html.ValidationMessageFor(model => model.RequiredDate)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.Priority, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.Priority, EnumHelper.GetSelectList(typeof(Priority)), new { @class="form-control"})
+                    @this.Html.ValidationMessageFor(model => model.Priority)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12 mt-3">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.RequestDescription)
+                </div>
+                <div class="editor-field">
+                    @this.Html.TextAreaFor(model => model.RequestDescription, new { @class = "form-control", @rows = 5 })
+                    @this.Html.ValidationMessageFor(model => model.RequestDescription)
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="editor-label-field col-md-8">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.Material, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownList("MatId", (SelectList)this.ViewBag.MaterialIds, Resource.Select, new { @class = "form-control select2" })
+                        @this.Html.ValidationMessage("Mat   Id")
+                    </div>
+                </div>
+
+                <div class="editor-label-field col-md-4">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.RequiredAmount, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.Editor("RequiredAmount", new { htmlAttributes = new { @class = "form-control", @type = "number", min = 0, @Value = "0" } })
+                        @this.Html.ValidationMessage("RequiredAmount")
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-12">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.Description)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.Editor("RowDescription", new { @class = "form-control"})
+                        @this.Html.ValidationMessage("RowDescription")
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-12 align-content-end mb-2">
+                    <div class="requiredlable">
+
+                    </div>
+                    <div class="editor-field">
+                        <a href="#" id="addItem" onclick="addItem()" class="btn btn-default btn-sm"><i class="fal fa-download fa-md text-green"></i> @Resource.Add @Resource.Mat</a>
+                        <a href="#" id="cancelItem" onclick="clearItem()" class="btn btn-default btn-sm"><i class="fal fa-times fa-md text-red"></i> @Resource.Cancel</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="detail-table" class="table display table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="table-col-sm">@Html.DisplayName(Resource.Id + " " + Resource.Mat)</th>
+                                <th>@Html.DisplayName(Resource.MatDescription)</th>                                
+                                <th class="table-col-sm">@Html.DisplayName(Resource.RequiredAmount)</th>
+                                <th>@Html.DisplayName(Resource.Description)</th>
+                                <th class="table-col-sm"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr />
+        <button class="btn btn-default btn-sm" onclick="saveData()"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    var MatList = [];
+
+
+    $(document).ready(function () {
+        $('.select2').select2();
+        $('#Amount').focusout(function () {
+            if ($('#RealAmount').val() == 0) {
+                $('#RealAmount').val($('#Amount').val());
+            }
+        });
+
+        if ('@Model.MatOrderDetails.Count()' > 0)
+        {
+            MatList=(@(new HtmlString(Json.Encode(Model.MatOrderDetails))))
+            loadDocDet();
+        }
+    });
+
+    function ItemValidation() {
+        var result = true;
+        var matId = $('#MatId').val();
+
+            if ($('#MatId').val() == null || $('#MatId').val() == '') {
+                $('#MatId').addClass('input-validation-error');
+                result = false;
+            }
+            else
+                $('#MatId').removeClass('input-validation-error');
+
+        if ($('#RequiredAmount').val() == null || parseFloat($('#RequiredAmount').val()) <= 0){
+            $('#RequiredAmount').addClass('input-validation-error');
+                result = false;
+            }
+            else
+            $('#RequiredAmount').removeClass('input-validation-error');
+
+        //******* region check data duplicated in List
+        var exists = $.grep(MatList, function (e) { return e.MatId == matId; });
+        if (exists.length != 0) {
+
+                $('#MatId').addClass('input-validation-error');
+                toastr.error('@Resource.DuplicateData');
+                result= false;
+            }
+            else { $('#MatId').removeClass('input-validation-error'); }
+
+
+        return result;
+    }
+
+    function addItem() {
+
+        if (!ItemValidation())
+            return false;
+        var mat = {
+            Id:0,
+            MatId: parseInt($('#MatId').val()),
+            Title: $('#MatId option:selected').text(),
+            RequiredAmount: parseFloat($('#RequiredAmount').val()),
+            Description: $('#RowDescription').val()
+
+        };
+        MatList.push(mat);
+        clearItem();
+        loadDocDet();
+        };
+
+    // Show Docdet list as table
+    function loadDocDet() {
+                $('#detail-table tbody').html('');
+            for (var i = 0; i < MatList.length; i++) {
+                $('#detail-table tbody').append('<tr>').append('<td>' + MatList[i].MatId).append('<td>' + MatList[i].Title).append('<td>' + MatList[i].RequiredAmount).append('<td>' + MatList[i].Description).append('<td class="text-center">' + '<i class="fad fa-circle-xmark fa-2x text-red" onclick="removeItem(' + MatList[i].MatId + ')"></i>');
+
+                }
+             };
+
+
+    function clearItem() {
+        $('#RequiredAmount').val(0);
+        $('#MatId').val('').trigger('change.select2');
+        $('#RowDescription').val('');
+    }
+
+    function removeItem(id) {
+        if (confirm('@Resource.AreYouSureToDeleteItem')) {
+            MatList = MatList.filter(i => i.MatId !== id);
+            loadDocDet();
+        }
+    }
+
+    function GenerateData()
+    {
+
+        var data = {
+            Id: $('#Id').val(),
+            ProjectId: $('#ProjectId').val(),
+            RequiredDate: $('#RequiredDate').val(),
+            Priority: $('#Priority').val(),
+            RequestDescription: $('#RequestDescription').val(),
+            MatOrderDetails: MatList
+        }        
+        return data;
+    }
+
+
+    function saveData() {
+
+        if (!$('#@ViewBag.EntityName').valid())
+            return;
+
+        if (MatList.length == 0) {
+            toastr.error('هیچ کالایی در سند وجو ندارد');
+            return;
+        }
+
+        $.ajax({
+            url: "/MatOrder/SetCrudAction",
+            data: GenerateData(),
+                cache: false,
+                type: "POST",
+                beforeSend: function () {
+                    $("#overly-loading-modal").removeClass("hidden");
+                },
+                success: function (response) {
+                    if (response.Result == true) {
+                        toastr.success(response.ErrorMessage);
+                        $('#modal-content').modal('toggle');
+                        $('#data-table-@ViewBag.EntityName').dataTable().api().ajax.reload();
+                    }
+                    else {
+                        toastr.error(response.ErrorMessage);
+                    }
+
+                },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(xhr.responseText);
+                },
+            complete: function responce() {
+                $("#overly-loading-modal").addClass("hidden");
+            }
+                });
+
+
+    }
+</script>
+
+
+

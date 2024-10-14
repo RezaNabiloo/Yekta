@@ -1,0 +1,27 @@
+﻿@using BSG.ADInventory.Resources
+@{ ViewBag.Title = "صفحه نخست";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<br />
+
+<blockquote class="quote-secondary mt-3 p-4">
+    <div class="row">
+        <div class="col-md-1">
+            <i class="fad fa-bells fa-3x text-blue"></i>
+        </div>
+        <div class="col-md-10">
+            <h6>کاربر گرامی </h6>
+            <p>به سامانه یکپارچه مدیریت انبارهای غیر متمرکز <cite title="Source Title" class="text-blue text-bold">بیــدار</cite> خوش آمدید.</p>
+            <p>نسخه کنونی نرم‌افــزار، نسخه <b class="text-bol text-blue">آزمایشی</b> بوده و امکان بروز خطا در برخی از فرآیندها وجود دارد. لذا خواهشمندیم در صورت بروز هرگونه اشکال و یا خطا، آن را با مدیر اجراییی پروژه در میان بگذارید تا در اسرع وقت مشکل مورد نظر، توسط تیم توسعه، بررسی و رفع گردد.</p>
+            <p>پیشاپیش از همکاری شما دوستان، سپاسگزاریم.</p>
+            <small><img src="~/Images/Public/Logo/BSxsmallLogo.png" /> تیم توسعه نرم‌افــزار <b class="text-bold text-blue">بیــدار</b> </small>            
+        </div>
+    </div>
+    
+</blockquote>*@
+<script>
+    $(document).ready(function () {
+        $('#profileUserInfo').html('@ViewBag.CurrentUser')
+    });
+</script>

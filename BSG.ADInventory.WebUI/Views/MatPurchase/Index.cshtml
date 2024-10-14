@@ -1,0 +1,72 @@
+﻿@using BSG.ADInventory.Resources
+
+@{
+    ViewBag.EntityName = "MatPurchase";
+}
+
+<section class="content" style="padding-top:10px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="overlay-wrapper hidden" id="overly-loading-@ViewBag.EntityName">
+                    <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                </div>
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-3" id="card-title"><h4 class="card-title float-right"><i class="fad fa-bag-shopping fa-lg"></i> @Resource.PurchasePrice @Resource.Material</h4></div>
+                            <div class="col-md-9" id="card-buttons-@ViewBag.EntityName">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="overflow-x:hidden">
+                        <div class="row">
+                            <div class="editor-label-field col-md-3 m-auto">
+                                <div class="requiredlable text-center">
+                                    @this.Html.Label(Resource.RDocNo)
+                                </div>
+                                <div class="editor-field">
+                                    @this.Html.Editor("DocNo", new { HtmlAttributes = new { @class = "form-control", @keydown = "javascript:GetTownships(this.value);" } })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row" id="DocData"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var entity = '@ViewBag.EntityName';
+        $('#DocNo').on('keypress', function (e) {
+            var docNo = $(this).val();
+            if (e.which == 13) {
+                $.ajax({
+                    cache: false,
+                    type: 'GET',
+                    url: '/' + entity + '/GetInvDocData?docNo=' + docNo,
+                    dataType: "html",
+                    beforeSend: function () {
+                        $("#overly-loading-" + entity).removeClass("hidden");
+                    },
+                    success: function (data) {
+                        $('#DocData').html(data);                        
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $('#DocData').html('');
+                        toastr.error(thrownError)
+                    },
+                    complete: function responce() {
+                        $("#overly-loading-" + entity).addClass("hidden");                        
+                    }
+                });
+            }
+        });
+    });
+</script>

@@ -1,0 +1,283 @@
+﻿@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "MatOrderOutbox";}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="overlay-wrapper hidden" id="overly-loading-@ViewBag.EntityName">
+                    <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                </div>
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-6 col-sm-12" id="card-title"><h4 class="card-title w-100 text-lg-left text-xl-left text-md-left text-sm-center"><i class="fad fa-inbox-out fa-lg"></i> @Resource.SentOrders</h4></div>
+                            <div class="col-md-6 col-sm-12" id="card-buttons-@ViewBag.EntityName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="data-table-@ViewBag.EntityName" class="display nowrap table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>@Resource.Proceedings</th>
+                                    <th>@Html.DisplayName(Resource.Id)</th>
+                                    <th>@Html.DisplayName(Resource.Priority)</th>
+                                    <th>@Html.DisplayName(Resource.Project)</th>
+                                    <th>@Html.DisplayName(Resource.Status)</th>
+                                    <th>@Html.DisplayName(Resource.RequiredDate)</th>
+                                    <th>@Html.DisplayName(Resource.RequestTime)</th>
+                                    <th>@Html.DisplayName(Resource.MatItemCount)</th>
+                                    <th>@Html.DisplayName(Resource.RequestMatDescription)</th>
+                                    <th>@Html.DisplayName(Resource.ConfirmUser)</th>
+                                    <th>@Html.DisplayName(Resource.ConfirmTime)</th>
+                                    <th>@Html.DisplayName(Resource.RequestDescription)</th>
+                                    <th>@Html.DisplayName(Resource.ConfirmDescription)</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+          var entity = '@ViewBag.EntityName';
+          $('body .dropdown-toggle').dropdown();
+
+        $('#data-table-' + entity + ' thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#data-table-' + entity + ' thead');
+
+        table = $('#data-table-' + entity).DataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            scrollX: true,
+            response: true,
+            lengthMenu: [[10, 25, 50, 100, 1000], [10, 25, 50, 100, 1000]],
+            dom: 'lfBrtip',
+            buttons: [
+                 { extend: 'copy', exportOptions: { columns: ':visible' } },
+                { extend: 'excel', exportOptions: {columns: ':visible' } },
+                {
+                    extend: 'print',
+                    exportOptions: { columns: ':visible' },
+                    title: '<div><h3 class="text-center">@Resource.List @Resource.Requests</h3></div>',
+                },
+                'colvis',
+                {
+                    text: '<i class="fal fa-refresh fa-md" data-toggle="tooltip" data-placement="bottom" title="@Resource.Refresh"></i>',
+                    action: function (e, dt, node, config) {
+                        $('#data-table-' + entity).dataTable().api().ajax.reload();
+                    }
+                },
+                {
+                    text: '<i class="fas fa-plus fa-md text-success" data-toggle="tooltip" data-placement="bottom" title="@Resource.Create"></i>',
+                    action: function (e, dt, node, config) {
+                        crudAction(entity, 'MatOrder/CrudAction', 0, '@Resource.Create @Resource.Order', 'modal-xl');
+                    }
+                },
+
+            ],
+            retrieve: true,
+            Response: true,
+            order: [0, 'asc'],
+            bProcessing: true,
+            language: { url: '/Content/plugins/datatables/fa.json' },
+            bFilter: true,
+            bServerSide: true,
+            sAjaxSource: '/MatOrder/GetDataList?type=1',
+            fnCreatedRow: function (nRow, aData, iDataIndex) {$(nRow).attr('id', 'row-' + entity + '-' + aData['Id']);},
+             aoColumns: [
+                {
+                    data: 'Id',
+                    render: function (data, type, row, meta) {
+                        return '<div class="dropdown">' +
+                            '<button type="button" class="btn btn-default dropdown-toggle text-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                            '<span class="fas fa-ellipsis-h fa-sm text-black-50"></span>' +
+                            '</button>' +
+                            '<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">' +
+                            (row.ConfirmStatus == 0 ?'<li><a class="dropdown-item text-black-50" href="#" onclick="crudAction(\'' + entity + '\',\'' +'MatOrder/CrudAction' + '\',' + data + ',\'@Resource.Edit @Resource.Order\' , \'modal-xl\')"> <i class="fal fa-edit fa-md"></i> @Resource.Edit</a></li>':'') +
+                            '<li><a class="dropdown-item text-black-50" href="#" onclick="MatOrderPreview(' + data + ')"> <i class="fal fa-file-circle-check fa-md"></i> @Resource.Show @Resource.Details</a></li>' +
+                            (row.ConfirmStatus != 0 ?'<li><a class="dropdown-item text-black-50" onclick="ArchiveRequest(' + data + ')" > <i class="fal fa-books fa-md"></i> @Resource.Archive @Resource.Order</a></li> ':'') +
+                            (row.ConfirmStatus == 0 ?'<li><a class="dropdown-item text-black-50" href="#" onclick="DeleteItem(' + data + ',\'' + entity + '\',\'' + entity + '\')"><i class="fal fa-trash-alt fa-md"></i> @Resource.Delete</a></li>':'')+
+                            '</ul' +
+                            '</div>'
+                    }
+                    , class: 'action-col'
+                },
+               { data: 'Id' },
+                 { data: 'Priority' },
+                { data: 'ProjectTitle' },
+                {
+                    data: 'ConfirmStatus',
+                    render: function (data, type, full, meta) {
+                        switch (data) {
+                            case 0: return '<span class="fad fa-spinner fa-spin fa-lg"></span> @Resource.Waiting';
+                            case 1: return '<span class="fas fa-check fa-lg text-success"></span> @Resource.Confirmed';
+                            case 2: return '<span class="fas fa-times fa-lg text-danger"></span> @Resource.Rejected';
+                            default : return '';
+                                break;
+                        }
+                    }
+                 },
+                 {
+                     data: 'Id',
+                     render: function (data, type, row, meta) {
+                         var reqDate = new Date(parseInt(row.RequiredDate.substr(6)));
+                         var now = new Date();
+                         var diff = Math.round(new Date(reqDate - now) / (1000 * 60 * 60 * 24));
+
+                         if (diff <= 7) {
+                             return '<span class="text-danger text-bold fa-beat-fade">' + reqDate.toLocaleDateString('fa-IR') + '</span>';
+                         }
+                         return '<span>' + reqDate.toLocaleDateString('fa-IR') + '</span>';
+                     }
+                 },
+                 {
+                     data: 'CreateTime',
+                     className: 'readonly not-allowed',
+                     render: function (data, type, full) {
+                         if (data != null) {
+                             var dtStart = new Date(parseInt(data.substr(6)));
+                             return dtStart.toLocaleString('fa-IR');
+                         } else {
+                             return "";
+                         }
+                     }
+                 },
+                 { data: 'MatItemCount' },
+                 { data: 'RequestMatDescription' },
+                 { data: 'ConfirmUser' },
+                 {
+                     data: 'ConfirmTime',
+                     className: 'readonly not-allowed',
+                     render: function (data, type, full) {
+                         if (data != null) {
+                             var dtStart = new Date(parseInt(data.substr(6)));
+                             return dtStart.toLocaleString('fa-IR');
+                         } else {
+                             return "";
+                         }
+                     }
+                 },
+                 {
+                     data: 'RequestDescription',
+                     render: function (data, type, full) {
+                         if (data == null) {
+                             return '';
+                         }
+                         return data.length > 20 ? data.substring(1, 20) + " ..." : data;
+                     }
+                 },
+                 {
+                     data: 'ConfirmDescription',
+                     render: function (data, type, full) {
+                         if (data == null) {
+                             return '';
+                         }
+                         return data.length > 20 ? data.substring(1, 20) + " ..." : data;
+                     }
+                 },
+            ],
+            columnDefs: [
+                { "width": "50px", "targets": 0 },
+                { "width": "50px", "targets": 1 }
+            ],
+            initComplete: function () {
+
+                var api = this.api();
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('#data-table-' + entity + '_wrapper .filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" class="form-control" placeholder=" " />');
+
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('#data-table-' + entity + '_wrapper .filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            //? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            ? regexr.replace('{search}', this.value).replace('(', '').replace(')', '')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keydown', function (e) {
+                                if (e.key == '13') {
+                                    e.stopPropagation();
+
+                                    $(this).trigger('change');
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                }
+
+                            });
+                    });
+
+
+                $('#data-table-' + entity + '_wrapper > .dt-buttons').appendTo('div.card-header #card-buttons-' + entity);
+                $('.dt-buttons').addClass('float-left dt-buttons-show');
+                $('.dt-buttons button').addClass('btn btn-sm btn-light');
+                $('#data-table-' + entity + '_wrapper tr.filters').fadeIn(1000);
+                table.columns.adjust();
+            },
+        });
+
+    });
+
+    function MatOrderPreview(id) {
+         $.ajax({
+                cache: false,
+                type: 'GET',
+             url: '/MatOrder/MatOrderPreview/'+id,
+                dataType: "html",
+             beforeSend: function () {
+                 $("#overly-loading-@ViewBag.EntityName").removeClass("hidden");
+                },
+                 success: function (data) {
+                     $('#modal-content-title').html('<i class="fad fa-rectangle-history-circle-plus fa-lg"></i> ' + '@Resource.Details @Resource.Request');
+                     $('#modal-content-body').html(data);
+                     $('#modal-content .modal-dialog').addClass('modal-xl');
+                     $('#modal-footer').removeClass('hidden');
+                     $('#modalBtnCancel').removeClass('hidden');
+                     $('#modal-top-button').addClass('hidden');
+                    $('#modal-content').modal('toggle');
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(thrownError)
+                },
+                complete: function responce() {
+                    $("#overly-loading-@ViewBag.EntityName").addClass("hidden");
+                }
+            });
+    }
+</script>

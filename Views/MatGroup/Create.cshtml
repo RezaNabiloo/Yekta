@@ -1,0 +1,32 @@
+﻿@model BSG.ADInventory.Entities.MatGroup
+@using BSG.ADInventory.Resources
+<section class="content" style="padding-top:10px;">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-6" id="card-title"><h4 class="card-title float-right"><i class="fas fa-plus fa-md"></i> @Resource.Create @Resource.MatGroup</h4></div>
+                            <div class="col-md-6" id="card-buttons">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.ValidationSummary(true)
+                        <fieldset>
+                            @Html.Partial("CreateOrEdit", Model)
+                        </fieldset>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

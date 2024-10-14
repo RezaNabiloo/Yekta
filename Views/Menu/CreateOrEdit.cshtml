@@ -1,0 +1,101 @@
+﻿@model BSG.ADInventory.Models.Menu.MenuModel
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "Menu";}
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');                
+                refreshData();
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="row">
+                    @Html.HiddenFor(model=>model.IsAdminMenu)
+                    <div class="editor-label-field col-md-12">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.Title, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.Title)
+                            @this.Html.ValidationMessageFor(model => model.Title)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-12">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.SpecifiedUrl, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.SpecifiedUrl, new { HtmlAttributes = new { @class = "form-control text-ltr" } })
+                            @this.Html.ValidationMessageFor(model => model.SpecifiedUrl)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-12">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.ViewOrder, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.ViewOrder, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.ViewOrder)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-12">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.IconClass, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.IconClass, new { HtmlAttributes = new { @class = "form-control text-ltr" } })
+                            @this.Html.ValidationMessageFor(model => model.IconClass)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-12">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.ParentMenuId)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownListFor(model => model.ParentMenuId, (SelectList)this.ViewBag.ParentMenuIds, Resource.Select, new { id = "ParentMenuId", @class = "select2 form-control" })
+                            @this.Html.ValidationMessageFor(model => model.ParentMenuId)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <fieldset class="form-group border pr-2 pl-2">
+                    <legend class="w-auto text-dark-blue"><i class="fad fa-shield-quartered fa-lg"></i> @Resource.Permissions مرتبط با منو</legend>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div id="roleCheckBoxList">
+                                @for (int i = 0; i < Model.Permissions.Count(); i++)
+                                {
+                                    @Html.HiddenFor(model => model.Permissions[i].PermissionId)
+                                    @Html.CheckBoxFor(model => model.Permissions[i].IsSelected)
+                                    @Html.Label(Model.Permissions[i].Description, new { @class = "pr-1 font-weight-light" })
+                                    @*<p class="text-info"><small>@Model.Permissions[i].HelpDescription</small></p>*@
+                                    @Html.HiddenFor(model => model.Permissions[i].Description)
+                                    <br />
+                                }
+                            </div>
+                            @this.Html.ValidationMessageFor(model => model.Permissions)
+
+
+                        </div>
+                    </div>
+                </fieldset>                
+            </div>
+            
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+}
+

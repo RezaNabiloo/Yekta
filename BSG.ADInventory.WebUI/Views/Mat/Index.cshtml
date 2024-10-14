@@ -1,0 +1,101 @@
+﻿@using BSG.ADInventory.Resources
+
+
+@{
+    ViewBag.EntityName = "Mat";
+}
+
+<section class="content" style="padding-top:10px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="overlay-wrapper hidden" id="overly-loading-@ViewBag.EntityName">
+                    <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                </div>
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-3" id="card-title"><h4 class="card-title float-right"><i class="fad fa-box-open-full fa-lg"></i> @Resource.List @Resource.Materials</h4></div>
+                            <div class="col-md-9" id="card-buttons-@ViewBag.EntityName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="overflow-x:hidden">
+                        <table id="data-table-@ViewBag.EntityName" class="display nowrap table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="table-col-sm">@Resource.Proceedings</th>
+                                    <th class="table-col-sm">@Html.DisplayName(Resource.Id)</th>
+                                    <th>@Html.DisplayName(Resource.Code)</th>
+                                    <th>@Html.DisplayName(Resource.Title)</th>
+                                    <th>@Html.DisplayName(Resource.MatUnit)</th>
+                                    <th>@Html.DisplayName(Resource.Brand)</th>
+                                    <th>@Html.DisplayName(Resource.MatGroup)</th>
+                                    <th>@Html.DisplayName(Resource.Dimention)</th>
+                                    <th>@Html.DisplayName(Resource.TechnicalSpec)</th>
+                                    <th>@Html.DisplayName(Resource.OrderPoint)</th>
+                                    <th>@Html.DisplayName(Resource.MinimumInventory)</th>
+                                    <th>@Html.DisplayName(Resource.MatAllocationType)</th>
+                                    <th>@Html.DisplayName(Resource.Model)</th>
+                                    <th>@Html.DisplayName(Resource.IsActive)</th>
+                                    <th>@Html.DisplayName(Resource.Description)</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    var config = {
+        entity: '@ViewBag.EntityName',
+        entityParentId:'',
+        entityPostfix: '',
+        entityTitle: '@Resource.Product',
+        modalSize: 'modal-xl',
+        customCrudAction: '',
+        sAjaxSource: '/' + '@ViewBag.EntityName' + '/GetDataTableFilteredList',
+        columns: [
+            {
+                data: 'Id',
+                render: function (data, type, row, meta) {
+                    return '<div class="dropdown">' +
+                        '<button type="button" class="btn btn-default dropdown-toggle text-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                        '<span class="fas fa-ellipsis-h fa-sm"></span>' +
+                        '</button>' +
+                        '<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">' +
+                        '<li><a class="dropdown-item" href="#" onclick="crudAction(\'' + '@ViewBag.EntityName' + '\',\'' + '@ViewBag.EntityName' + '/CrudAction' + '\',' + data + ',\'@Resource.Edit @Resource.Product\' , \'modal-xl\')" > <i class="fal fa-edit fa-md"></i> @Resource.Edit</a></li>' +
+                        '<li><a class="dropdown-item" href="#" onclick="DeleteItem(' + data + ',\'' + '@ViewBag.EntityName' + '\',\'' + '@ViewBag.EntityName' + '\')"><i class="fal fa-trash-alt fa-md"></i> @Resource.Delete</a></li>' +
+                        '</ul>' +
+                        '</div>'
+                }
+                , class: 'action-col'
+            },
+            { data: 'Id'},
+            { data: 'Code'},
+            { data: 'Title'},
+            { data: 'MatUnitTitle'},
+            { data: 'BrandTitle'},
+            { data: 'MatGroupTitle'},
+            { data: 'Dimention'},
+            { data: 'TechnicalSpec'},
+            { data: 'OrderPoint'},
+            { data: 'MinimumInventory'},
+            { data: 'MatAllocationType'},
+            { data: 'Model'},
+            { data: 'IsActive'},
+            { data: 'Description'},
+
+        ],
+        columnDefs: [
+            { "width": "50px", "targets": 0 },
+            { "width": "50px", "targets": 1 }
+        ]
+    };
+    initializeDataTable(config);
+</script>
+

@@ -1,0 +1,25 @@
+﻿@model string
+@using BSG.ADInventory.Resources
+<div class="form-groups">
+    @Html.HiddenFor(model => model) <!-- Hidden field to store the uploaded file path -->
+
+    <div class="fileupload fileupload-new" data-provides="fileupload">
+        <!-- Display current image or placeholder if none exists -->
+        <div class="fileupload-new thumbnail" style="width: 75px; height: 75px;">
+            <img src="@Url.Content(Model == null ? "~/Images/noimage.png" : Model)" alt="" />
+        </div>
+
+        <!-- Preview of the uploaded image -->
+        <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 75px; max-height: 75px; line-height: 20px;"></div>
+
+        <!-- File input for image upload -->
+        <div>
+            <span class="btn btn-white btn-file pl-0">
+                <span class="btn btn-default btn-sm fileupload-new"><i class="fal fa-paperclip fa-sm"></i> @Resource.SelectImage</span>
+                <span class="btn btn-default btn-sm fileupload-exists"><i class="fal fa-refresh fa-sm"></i> @Resource.ChangeImage</span>
+                <input type="file" name="@ViewData.TemplateInfo.HtmlFieldPrefix" class="default" />
+            </span>
+            <a href="#" class="btn btn-danger btn-sm fileupload-exists" data-dismiss="fileupload"><i class="fal fa-trash-alt fa-sm"></i> @Resource.Delete</a>
+        </div>
+    </div>
+</div>

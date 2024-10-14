@@ -1,0 +1,134 @@
+﻿:root {
+    --white: #fff;
+    --info: #17a2b8;
+    --info-light: #68c2d0;
+    --info-lighter1: #8fd7e2;
+    --info-lighter2: #b4e6ee;
+    --info-lighter3: #d8f2f6;
+    --info-lighter4: #e6f7f9;
+    --info-lighter5: #f4fbfc;
+    --info-dark: #18899b;
+    --info-darker1: #117d8e;
+    --gray-light: #dee2e6;
+    --gray-lighter1: #ebedef;
+    --dark-blue: #0747a6;
+    --dark-blue-lighter1: #1958b6;
+    --dark-blue-lighter2: #2f67ba;
+    --dark-blue-lighter3: #386dbd;
+    --dark-blue-lighter4: #518ce3;
+    --lighter-blue1: #e0e9f2;
+    --lighter-blue2: #f0f7fd;
+    --lighter-blue3: #f8fbfe;
+}
+
+
+.text-gt-purple {
+    color:#461D52;
+}
+.text-dark-blue {
+    color:var(--dark-blue);
+}
+
+.content-header h1 {
+    color: #7B6084;
+}
+[class*=sidebar-dark-] {
+    background-color: var(--dark-blue);    
+}
+.layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
+    background-color: var(--dark-blue);
+}
+[class*=sidebar-dark] .user-panel {
+    border-bottom: 1px solid var(--dark-blue-lighter1);
+}
+[class*=sidebar-dark] .brand-link {
+    border-bottom: 1px solid var(--dark-blue-lighter1);
+}
+[class*=sidebar-dark] .btn-sidebar, [class*=sidebar-dark] .form-control-sidebar {
+    background-color: var(--dark-blue-lighter1);
+    border: 1px solid var(--dark-blue-lighter2);
+    color: #c2c7d0;
+}
+.input-group-append .btn-sidebar:hover, .input-group-append .btn-sidebar:focus {
+    background-color: #4d7194;
+    color: #fff;
+}
+
+[class*=sidebar-dark] .list-group-item {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue-lighter3);
+    color:rgb(255,255,255,0.6);
+}
+[class*=sidebar-dark] .sidebar-search-results :hover, [class*=sidebar-dark] .input-group-append :hover {
+    background-color: var(--dark-blue-lighter3)!important;
+    color: #fff;
+}
+
+
+[class*="sidebar-dark-"] .sidebar a, [class*="sidebar-dark-"] .nav-treeview > .nav-item > .nav-link {
+    color: rgb(255,255,255,0.6);
+}
+
+[class*=sidebar-dark] .list-group-item:hover {
+    background-color: #4d7194;
+}
+
+th, thead tr {
+    background: var(--lighter-blue1);
+    border-color: var(--lighter-blue1);
+}
+.table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+    background-color: var(--lighter-blue3);
+}
+
+.table-striped > tbody > tr:nth-child(odd):hover > td, .table-striped > tbody > tr:nth-child(odd):hover > th,
+table.table-hover tbody > tr:hover {
+    background-color: var(--lighter-blue2);
+}
+
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: var(--dark-blue-lighter1);
+    border-color: var(--dark-blue);
+}
+
+.page-link:hover {
+    background-color: #F1EAF3;
+}
+.page-link {
+    color: #7A5885;
+}
+
+
+.dt-button-collection .dropdown-menu a.active, .dt-button-collection .dropdown-menu a.active:focus {
+    background-color: var(--dark-blue-lighter1);
+}
+
+.card-title {
+    color: var(--dark-blue);    
+}
+
+
+.dropdown-item.active, .dropdown-item:active, .dropdown-item::selection {
+    color: #fff !important;
+    background-color: var(--dark-blue-lighter1);
+}
+
+.datepicker-plot-area .datepicker-day-view .table-days td.selected span, .datepicker-plot-area .datepicker-year-view .year-item.selected, .datepicker-plot-area .datepicker-month-view .month-item.selected {
+    background-color: var(--dark-blue-lighter3);
+}
+
+
+
+input.form-control-sidebar::placeholder {
+    color: var(--dark-blue-lighter4)!important;
+}
+.modal-title i {
+    color: var(--dark-blue);
+}
+
+ul.beat-fade > li.nav-item > a.nav-link.active i {
+    color: #7B6084;
+}

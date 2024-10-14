@@ -1,0 +1,390 @@
+﻿@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "PurchaseDocOnWay";}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="overlay-wrapper hidden" id="overly-loading-@ViewBag.EntityName">
+                    <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                </div>
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-6 col-sm-12" id="card-title"><h4 class="card-title w-100 text-lg-left text-xl-left text-md-left text-sm-center"><i class="fad fa-bags-shopping fa-lg"></i> @Resource.Materials @Resource.OnWay</h4></div>
+                            <div class="col-md-6 col-sm-12" id="card-buttons-@ViewBag.EntityName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="data-table-@ViewBag.EntityName" class="display nowrap table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>@Html.DisplayName(Resource.PurchaseDocId)</th>
+                                    <th>@Html.DisplayName(Resource.CreateTime)</th>
+                                    <th>@Html.DisplayName(Resource.RequestCode)</th>
+                                    <th>@Html.DisplayName(Resource.MatCode)</th>
+                                    <th>@Html.DisplayName(Resource.MatDescription)</th>
+                                    <th>@Html.DisplayName(Resource.MatUnit)</th>
+                                    <th>@Html.DisplayName(Resource.PurchaseQty)</th>
+                                    <th>@Html.DisplayName(Resource.ReciveQty)</th>
+                                    <th>@Html.DisplayName(Resource.Provider)</th>
+                                    <th>@Html.DisplayName(Resource.Project)</th>
+                                    <th>@Html.DisplayName(Resource.Aggregated)</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script type="text/javascript">
+
+      $(document).ready(function () {
+        var entity = '@ViewBag.EntityName';
+
+        $('#data-table-' + entity + ' thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#data-table-' + entity + ' thead');
+
+        table = $('#data-table-' + entity).DataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            scrollX: true,
+            response: true,
+            lengthMenu: [[10, 25, 50, 100, 1000], [10, 25, 50, 100, 1000]],
+            dom: 'lfBrtip',
+            buttons: [
+                { extend: 'copy', exportOptions: { columns: ':visible' } },
+                { extend: 'excel', exportOptions: {columns: ':visible' } },
+                {
+                    extend: 'print',
+                    exportOptions: { columns: ':visible' },
+                    title: '<div><p class="text-center">@Resource.List @Resource.Townships</p><hr /></div>',
+                },
+                'colvis',
+                {
+                    text: '<i class="fal fa-refresh fa-md" data-toggle="tooltip" data-placement="bottom" title="@Resource.Refresh"></i>',
+                    action: function (e, dt, node, config) {
+                        $('#data-table-' + entity).dataTable().api().ajax.reload();
+                    }
+                },            
+
+            ],
+            retrieve: true,
+            Response: true,
+            order: [0, 'asc'],
+            bProcessing: true,
+            language: { url: '/Content/plugins/datatables/fa.json' },
+            bFilter: true,
+            bServerSide: true,
+            sAjaxSource: '/' + 'PurchaseDoc' + '/GetOnWayDataList',
+            fnCreatedRow: function (nRow, aData, iDataIndex) {$(nRow).attr('id', 'row-' + entity + '-' + aData['Id']);},
+             aoColumns: [
+
+                 { data: 'PurchaseDocId' },
+                 {
+                     data: 'CreateTime',
+                     className: 'readonly not-allowed',
+                     render: function (data, type, full) {
+                         if (data != null) {
+                             var dtStart = new Date(parseInt(data.substr(6)));
+                             return dtStart.toLocaleString('fa-IR');
+                         } else {
+                             return "";
+                         }
+                     }
+                 },
+                 { data: 'RequestId' },
+                 { data: 'MatId' },
+                 { data: 'MatTitle' },
+                 { data: 'MatUnit' },
+                 { data: 'PurchaseQty' },
+                 { data: 'ReciveQty' },
+                 { data: 'ProviderName' },
+                 { data: 'ProjectTitle' },
+                 {
+                     data: 'IsAggregated',
+                     render: function (data, type, full, meta) {
+                         return data == 1 ? '<i class="fas fa-check fa-lg text-success"></i>' : '';
+                     }
+                 },
+
+            ],
+            columnDefs: [
+                { "width": "50px", "targets": 0 },
+                { "width": "100px", "targets": 1 },
+                { "width": "50px", "targets": 2 },
+                { "width": "70px", "targets": 4 },
+                { "width": "70px", "targets": 5 },
+                { "width": "70px", "targets": 6 },
+            ],
+            initComplete: function () {
+
+                var api = this.api();
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('#data-table-' + entity + '_wrapper .filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" class="form-control" placeholder=" " />');
+
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('#data-table-' + entity + '_wrapper .filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            //? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            ? regexr.replace('{search}', this.value).replace('(', '').replace(')', '')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keydown', function (e) {
+                                if (e.key == '13') {
+                                    e.stopPropagation();
+
+                                    $(this).trigger('change');
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                }
+
+                            });
+                    });
+
+
+                $('#data-table-' + entity + '_wrapper > .dt-buttons').appendTo('div.card-header #card-buttons-' + entity);
+                $('.dt-buttons').addClass('float-left dt-buttons-show');
+                $('.dt-buttons button').addClass('btn btn-sm btn-light');
+                $('#data-table-' + entity + '_wrapper tr.filters').fadeIn(1000);
+                table.columns.adjust();
+            },
+        });
+
+      });
+
+    function crudActionLocal(id, title, modalSize) {
+
+        $.ajax({
+            cache: false,
+            type: 'GET',
+            url: 'PurchaseDoc/CrudAction?id=' + id,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-@ViewBag.EntityName").removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-rectangle-history-circle-plus fa-lg"></i> ' + title);
+                $('#modal-content-body').html(data);
+                if (modalSize != '') {
+                    $('#modal-content .modal-dialog').addClass(modalSize);
+                }
+                $('#modal-content').modal('toggle');
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-@ViewBag.EntityName").addClass("hidden");
+                if ($.validator.unobtrusive != undefined) {
+                    $.validator.unobtrusive.parse("#partialForm");
+                }
+                else { toastr.error('Form validator not found.') }
+            }
+        });
+    }
+
+    function uploadFile(id, entity) {
+        $.ajax({
+            type: 'GET',
+            url: '/PurchaseDocAttachment/GetPurchaseDocAttachmentFile/',
+            data: { purchaseDocId: id},
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-@ViewBag.EntityName").removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-rectangle-history-circle-plus fa-lg"></i> ' + 'بارگذاری فایل');
+                $('#modal-content-body').html(data);
+                $('#modal-content').modal('toggle');
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-@ViewBag.EntityName").addClass("hidden");
+            }
+        });
+    }
+
+    function showAttachments(id) {
+        $.ajax({
+            cache: false,
+            type: 'GET',
+            url: '/PurchaseDocAttachment/GetAttachments?id=' + id,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-@ViewBag.EntityName").removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-paperclip fa-lg"></i> ' + 'لیست پیوست‌ها');
+                $('#modal-content-body').html(data);
+                $('#modal-footer').removeClass('hidden');
+                $('#modalBtnCancel').removeClass('hidden');
+                $('#modal-content').modal('toggle');
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-@ViewBag.EntityName").addClass("hidden");
+            }
+        });
+    }
+
+    function downloadFile(id) {
+        $.ajax({
+            cache: false,
+            type: 'GET',
+            url: '/PurchaseDocAttachment/GetAttachments?id=' + id,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-modal").removeClass("hidden");
+            },
+            success: function (response) {
+                var blob = new Blob([response], { type: 'application/ms-excel;' });
+                var downloadUrl = URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                a.href = downloadUrl;
+                a.download = "";
+                document.body.appendChild(a);
+                a.click();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-modal").addClass("hidden");
+            }
+        });
+    }
+
+    function Print(id) {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Report/PrintPurchaseDoc?id=" + id,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-@ViewBag.EntityName").removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-print fa-lg"></i> چاپ سند');
+                $('#modal-content-body').html(data);
+
+                $('#modalBtnCancel').removeClass('hidden');
+
+                $('#modal-content .modal-dialog').addClass('modal-xl');
+                $('#modal-content').modal('toggle');
+                //$(function () {
+                //    $('#modalBtnPrint').unbind('click').bind('click', function (e) {
+                //        SaveInvDoc();
+                //    });
+                //});
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-@ViewBag.EntityName").addClass("hidden");
+            }
+
+        });
+
+    }
+
+    function followUp(id) {
+        $.ajax({
+            cache: false,
+            type: 'GET',
+            url: '/PurchaseDoc/FollowUpPurchaseDoc?id=' + id,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-@ViewBag.EntityName").removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-circle-info fa-lg"></i>  @Resource.FollowUp @Resource.PurchaseDoc');
+                $('#modal-content-body').html(data);
+                $('#modal-content .modal-dialog').addClass('modal-xl');
+                $('#modal-footer').removeClass('hidden');
+                $('#modalBtnCancel').removeClass('hidden');
+                $('#modal-content').modal('toggle');
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-@ViewBag.EntityName").addClass("hidden");
+            }
+        });
+    }
+
+    function closePurchaseDoc(id)
+    {
+        if (confirm('آیا از بستن دستور خرید اطمینان دارید؟')) {
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '/PurchaseDoc/ClosePurchaseDoc?id=' + id,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#overly-loading-@ViewBag.EntityName").removeClass("hidden");
+                },
+                success: function (data) {
+                    if (data.Result == true) {
+                        toastr.success('@Resource.DataSavedSuccessfully');
+                        $('#data-table-@ViewBag.EntityName').dataTable().api().ajax.reload();
+                    }
+                    else {
+                        toastr.error(data.ErrorMessage)
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(thrownError)
+                },
+                complete: function responce() {
+                    $("#overly-loading-@ViewBag.EntityName").addClass("hidden");
+                }
+            });
+        }
+    }
+
+</script>

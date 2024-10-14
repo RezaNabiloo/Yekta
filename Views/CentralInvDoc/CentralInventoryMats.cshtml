@@ -1,0 +1,142 @@
+﻿@model IEnumerable<BSG.ADInventory.Models.Mat.MatStockViewModel>
+@using BSG.ADInventory.Resources
+@{ ViewBag.EntityName = "CentralInventoryMats";}
+
+<table id="data-table-@ViewBag.EntityName" class="display table-hover table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.Code)</th>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <th>@Html.DisplayNameFor(model => model.Project)</th>
+            <th>@Html.DisplayNameFor(model => model.Qty)</th>
+            <th>@Html.DisplayNameFor(model => model.MatUnit)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Code)</td>
+                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                <td>@Html.DisplayFor(modelItem => item.Project)</td>
+                <td>@Html.DisplayFor(modelItem => item.Qty)</td>
+                <td>@Html.DisplayFor(modelItem => item.MatUnit)</td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        var entity = '@ViewBag.EntityName';
+
+        $('#data-table-' + entity + ' thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#data-table-' + entity + ' thead');
+
+        table = $('#data-table-' + entity).DataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            //scrollX: true,
+            response: true,
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "همه"]],
+            //lengthChange: true,
+            dom: 'lfBrtip',
+             buttons: [
+                 'copy', 'excel', 'print', 'colvis',
+                 {
+                        text: '<i class="fal fa-refresh fa-md"></i> @Resource.Refresh',
+                        action: function (e, dt, node, config) {
+                            LoadData(3)
+                        }
+                    },
+            ],
+            retrieve: true,
+            Response: true,
+            order: [0, 'asc'],
+            bProcessing: true,
+            language: {
+                url: '/Content/plugins/datatables/fa.json'
+            },
+
+
+            bFilter: true,//Enables Filtering
+            bServerSide: false,
+            fnCreatedRow: function (nRow, aData, iDataIndex) {
+                $(nRow).attr('id', 'row-' + entity + '-' + aData['Id']);
+            },
+            columnDefs: [
+                { "width": "50px", "targets": 0 },
+                { "width": "50px", "targets": 1 }
+            ],
+            initComplete: function () {
+                var api = this.api();
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('#data-table-' + entity + ' .filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" class="form-control" placeholder=" " />');
+
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('#data-table-' + entity + ' .filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            //? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            ? regexr.replace('{search}', this.value).replace('(', '').replace(')', '')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keydown', function (e) {
+                                if (e.key == '13') {
+                                    e.stopPropagation();
+
+                                    $(this).trigger('change');
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                }
+
+                            });
+                    });
+                $("div.card-header #card-buttons-central").html('');
+                $('#data-table-' + entity + '_wrapper > .dt-buttons').appendTo("div.card-header #card-buttons-central");
+                $('.dt-buttons').addClass('float-left dt-buttons-show');
+                $('.dt-buttons button').addClass('btn btn-sm btn-light');
+                $('#data-table-' + entity + '_wrapper tr.filters').fadeIn(1000);
+                table.columns.adjust();
+                //$("div.card-header #card-buttons-central").html('');
+                //$('#data-table-' + entity + ' tr.filters').addClass('visible-filters');
+                //$('#data-table-' + entity ).fadeIn();
+            },
+        });
+
+
+       
+    });
+
+</script>

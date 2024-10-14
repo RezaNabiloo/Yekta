@@ -1,0 +1,14 @@
+﻿@model BSG.ADInventory.Models.MatGroup.MatGroupCEDTO
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "MatGroup";}
+
+@using (Ajax.BeginForm("SetCrudAction", "MatGroup", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = ViewBag.EntityName }))
+{
+    <div id="@ViewBag.EntityName">
+        <div class="form-horizontal">
+            @Html.Partial("CreateOrEdit", Model)
+        </div>
+    </div>
+
+}
+

@@ -1,0 +1,36 @@
+﻿
+@model DateTime?
+@{
+    var formName = ViewData.TemplateInfo.HtmlFieldPrefix;
+}
+
+<div class="input-group">
+    <input type="text" id="@formName" name="@formName" class="form-control" value="@(Model==null?"":Model.Value.ToShortDateString())" autocomplete="off" />    
+    <div class="input-group-prepend">
+        <span class="input-group-text">
+            <i class="fal fa-calendar-alt"></i>
+        </span>
+    </div>
+</div>
+    
+<script type="text/javascript">        
+    $('#@formName').persianDatepicker({   
+            autoClose: true,
+            format: 'YYYY/MM/DD',
+            observer: true,
+            initialValueType: 'persian',
+            initialValue: !1,
+            timePicker: {
+                enabled: false
+            },
+            toolbox: {
+                calendarSwitch: {
+                    enabled: false
+                }
+            },
+            onSelect: function (params) {
+                valOf = $(this.model.inputElement).val();
+                $(this.model.inputElement).val(valOf.toEnglishDigits());
+            }
+        });
+</script>

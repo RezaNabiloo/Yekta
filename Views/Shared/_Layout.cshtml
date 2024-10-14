@@ -1,0 +1,456 @@
+﻿@using System.Configuration
+@using Zcf.Common.Extensions
+@using Zcf.Common.MVC.Helpers.DynamicMenu
+@using BSG.ADInventory.Resources
+@using Zcf.Globalization
+@using Zcf.Web.Mvc.Extensions
+@using System.Web.Optimization;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @*<title>بیــدار | @ViewBag.Title</title>*@
+    @*<link rel="icon" href="~/images/Public/Company-Images/logo.ico" sizes="128*128" />*@
+    @Styles.Render("~/Content/fonts")
+    @Styles.Render("~/Content/datatable")    
+    @Styles.Render("~/Content/select2")
+    @Styles.Render("~/Content/sweetalert2")
+    @Styles.Render("~/Content/toastr")
+    <link href="~/Content/plugins/persian-datetimepicker/persian-datepicker.css" rel="stylesheet" />
+    @Styles.Render("~/Content/them")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open layout-navbar-fixed layout-footer-fixed text-sm">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="~/Content/dist/img/BidarsoftLogo.png" alt="Bidarsoft" height="60" width="60">
+        </div>
+
+        @Html.Partial("_Header")
+        @Html.Partial("_Sidebar")
+        <!-- Content Wrapper. Contains page content -->
+        @RenderBody()
+        <div class="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
+
+            <div class="nav navbar navbar-expand navbar-white navbar-light border-bottom p-0">
+                <div class="nav-item dropdown">
+                    <a class="nav-link bg-danger" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa-duotone fa-window-frame fa-lg"></i></a>
+                    <div class="dropdown-menu mt-0">
+                        <a class="dropdown-item" href="#" onclick="showDesktop()"><i class="fal fa-desktop fa-lg text-gray"></i> @Resource.Desktop</a>
+                        <a class="dropdown-item" href="#" data-widget="iframe-close" data-type="all"><i class="fal fa-times fa-lg text-red"></i> @Resource.CloseAll</a>
+                        <a class="dropdown-item" href="#" data-widget="iframe-close" data-type="all-other"><i class="fal fa-times fa-lg text-gray"></i> @Resource.CloseOther</a>
+                    </div>
+                </div>
+                <a class="nav-link bg-light" href="#" data-widget="iframe-scrollright"><i class="fas fa-angle-double-right"></i></a>
+                <ul class="navbar-nav overflow-hidden" role="tablist"></ul>
+                <a class="nav-link bg-light" href="#" data-widget="iframe-scrollleft"><i class="fas fa-angle-double-left"></i></a>
+                @*<a class="nav-link bg-light" href="#" data-widget="iframe-fullscreen"><i class="fas fa-expand"></i></a>*@
+            </div>
+            <div class="tab-content">
+                <div class="tab-empty" id="tab-empty">
+
+
+                </div>
+                <div class="tab-loading">
+                    <div>
+                        <h5><i class="fad fa-spinner fa-spin"></i> @Resource.Loading</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.content-wrapper -->
+
+        @Html.Partial("_Footer")
+
+    </div>
+
+
+
+
+    <script src="~/Content/plugins/jquery-validation/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Content/plugins/jquery-validation/jquery.unobtrusive-ajax.min.js"></script>
+    @Scripts.Render("~/bundles/select2")
+    <script src="~/Content/plugins/jquery-ui/jquery-ui.min.js"></script>
+    @Scripts.Render("~/bundles/datatable")
+    @Scripts.Render("~/bundles/sweetalert2")
+    @Scripts.Render("~/bundles/toastr")
+    <script src="~/Content/plugins/persian-datetimepicker/persian-date.min.js"></script>
+    <script src="~/Content/plugins/persian-datetimepicker/persian-datepicker.min.js"></script>
+    @Scripts.Render("~/bundles/them")
+
+    @RenderSection("scripts", required: false)
+
+    <div class="modal fade" id="modal-content">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header ">
+                    <h6 class="modal-title text-gt-blue" id="modal-content-title">Extra Large Modal</h6>
+                    <div class="float-left" id="modal-dialog-data-table-buttons"></div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="modal-top-button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="overlay-wrapper hidden" id="overly-loading-modal">
+                        <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.PleaseWait</div></div>
+                    </div>
+                    <div id="modal-content-body">
+
+                    </div>
+                </div>
+                <div class="modal-footer hidden" id="modal-footer">
+                    <button type="button" class="btn btn-default btn-sm hidden" id="modalBtnSave"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                    <button type="button" class="btn btn-default btn-sm hidden" id="modalBtnOk"><span class="fal fa-check fa-md text-green"></span> @Resource.Ok </button>
+                    <button type="button" class="btn btn-default btn-sm hidden" data-dismiss="modal" id="modalBtnCancel"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade mt-auto" id="modal2-content" data-keyboard="false" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header ">
+                    <h6 class="modal-title" id="modal2-content-title">Extra Large Modal</h6>
+                    <div class="float-left" id="modal2-dialog-data-table-buttons">
+                        @*<button type="button" class="close" data-dismiss="modal" aria-label="Close" id="modal2-top-button">
+                                <span aria-hidden="true">&times;</span>
+                            </button>*@
+                    </div>
+
+                </div>
+                <div class="modal-body">
+                    <div class="overlay-wrapper hidden" id="overly-loading-modal2">
+                        <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.PleaseWait</div></div>
+                    </div>
+                    <div id="modal2-content-body">
+
+                    </div>
+                </div>
+                <div class="modal-footer hidden" id="modal2-footer">
+                    <button type="button" class="btn btn-default btn-sm hidden float-right" id="modalBtnSave2"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                    <button type="button" class="btn btn-default btn-sm hidden float-left" id="modalBtnOk2"><span class="fal fa-check fa-md text-green"></span> @Resource.Ok </button>
+                    <button type="button" class="btn btn-default btn-sm hidden float-right" data-dismiss="modal" id="modalBtnCancel2"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+                </div>
+            </div>            
+        </div>        
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            //$("form").addClass("form-horizontal").attr("role", "form");
+            $('input[type="text"],input[type="search"],input[type="number"],input[type="time"],input[type="datetime"],input[type="password"],textarea,select').addClass("form-control");
+            $('.select2').select2()
+
+            $("a[data-widget='pushmenu']").on('click', function (e) {
+                if ($("body").hasClass("sidebar-collapse")) {
+                    setCookie("sidebar", "on",1000);
+                } else {
+                    setCookie("sidebar", "off",1000);
+                };
+            });
+            loadUserShortcuts()
+        });
+
+    $(function () {
+        if (getCookie('sidebar') == 'off') {
+            $("body").addClass("sidebar-collapse");
+        }
+        else {
+            $("body").removeClass("sidebar-collapse");
+        }
+    });
+
+    function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        let expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'bottom-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+        }
+
+        function DeleteItem(id, path, tablePostfix,overlyPostfix)
+    {
+        var result = confirm('@Resource.AreYouSureToDeleteItem');
+        if (result) {
+            var url = '/' + path + '/DeleteAjax/' + id;
+                $.ajax({
+                    url: url,
+                    cache: false,
+                    type: "POST",
+                    beforeSend: function () {
+                        $("#overly-loading-" + overlyPostfix).removeClass("hidden");
+                    },
+                    success: function (response) {
+                        if (response.Result == true) {
+                            if (response.ErrorExists == false) {
+                                toastr.success('@Resource.ItemRemovedSuccessfully');
+                                $('#data-table-' + tablePostfix).dataTable().api().ajax.reload();
+                            }
+                            else
+                            {
+                                if (response.ErrorCode == 3) {
+                                    toastr.error('@Resource.DeleteConflictErrorMessage')
+                                }
+                                else {
+                                    toastr.error(response.ErrorMessage)
+                                }
+                            }
+                        }
+                        else
+                        {
+                            toastr.error(response.ErrorMessage)
+                        }
+                    },
+                    error: function (response) {
+                        toastr.error(response.ErrorMessage)
+                    },
+                    complete: function () {
+                        $("#overly-loading-" + overlyPostfix).addClass("hidden");
+                    },
+                });
+            }
+    }
+
+    $('#modal-content').on('hidden.bs.modal', function (e) {
+        $('#modal-content-title').html('');
+        $('#modal-content-body').html('');
+        $('#modalBtnSave').addClass('hidden');
+        $('#modalBtnOk').addClass('hidden');
+        $('.modal-dialog').removeClass('modal-xl');
+        $('.modal-dialog').removeClass('modal-xxl');
+        $('.modal-dialog').removeClass('modal-lg');
+        $('#modal-dialog-data-table-buttons').html('');
+        $('#modal-top-button').removeClass('hidden');
+        $('#modal-footer').addClass('hidden');
+        $('#modal-top-button').removeClass('hidden');
+    });
+
+        $('#modal-content').on('show.bs.modal', function (e) {
+            $('input[type="text"],input[type="search"],input[type="number"],input[type="time"],input[type="datetime"],input[type="password"],textarea,select').addClass("form-control");
+
+        });
+
+
+        $("body").on('DOMSubtreeModified', "#modal-content-body", function () {
+            //$.validator.unobtrusive.parse("#partialForm");
+        });
+
+
+
+        function crudAction(entity, link, id, title, modalSize) {
+
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                //url: '/' + entity + '/CrudAction?id=' + id,
+                url: '/' + link + '?id=' + id,
+                dataType: "html",
+                beforeSend: function () {
+                    $("#overly-loading-" + entity).removeClass("hidden");
+                },
+                success: function (data) {
+                    $('#modal-content-title').html('<i class="fad fa-rectangle-history-circle-plus fa-lg"></i> ' + title);
+                    $('#modal-content-body').html(data);
+                    if (modalSize != '') {
+                        $('#modal-content .modal-dialog').addClass(modalSize);
+                    }
+                    $('.select2').select2();
+                    $('#modal-content').modal('toggle');
+
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(thrownError)
+                },
+                complete: function responce() {
+                    $("#overly-loading-" + entity).addClass("hidden");
+                    if ($.validator.unobtrusive != undefined) {
+                        $.validator.unobtrusive.parse("#partialForm");
+                    }
+                    else { toastr.error('Form validator not found.') }
+                }
+            });
+        }
+
+
+    </script>
+    <script type="text/javascript">
+
+        $(init);
+
+        function init() {
+            $('#tab-empty').droppable({
+                drop: handleDropEvent
+            });
+
+            $('.draggable-MenuItem').draggable({
+                containment: 'document',
+                appendTo: 'body',
+                cursor: 'move',
+                snap: '#tab-empty',
+                revertDuration: 200,
+                helper: function () {
+                    var iconText = jQuery("a", this).html();
+                    icontext = iconText.replace('nav-icon', '')
+                    return $("<div id='draggableHelper' class='p-1 pb-0'></div>").append(iconText);
+                }
+            });
+        }
+ function handleDropEvent(event, ui) {
+            var draggable = ui.draggable;
+            var id = draggable.attr('id').match(/\d+/);
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '/UserShortcut/AddShortcut?id=' + id,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#tab-loading").removeClass("hidden");
+                },
+                success: function (data) {
+                    loadUserShortcuts();
+                    if (data.Result==true) {
+                        toastr.success(data.ErrorMessage)
+                    }
+                    else
+                        toastr.error(data.ErrorMessage)
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(thrownError)
+                },
+                complete: function responce() {
+                    $("#tab-loading").addClass("hidden");
+                }
+            });
+        }
+
+        function loadUserShortcuts() {
+
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '/UserShortcut/GetUserShortcuts',
+                dataType: "json",
+                beforeSend: function () {
+                    $("#tab-loading").removeClass("hidden");
+                },
+                success: function (data) {
+                    $('#tab-empty').html('');
+                    for (var i = 0; i < data.length; i++) {
+                        var content = '<div class="shortcut-container p-2">' +
+                            '<i class="fas fa-times shortcut-close" onclick="removeShortcut(' + data[i].Id + ')"></i>'+
+                            '<a class="text-center nav-link" onclick="openMenu('+data[i].MenuId+')">' +
+                            '<i class="'+data[i].IconClass.replace('far','fad').replace('fal','fad')+' fa-2x d-block"></i>' +
+                            '<p class="mb-0 mt-2" style="font-size:11px">' + data[i].Title + '</p></a></div>';
+                        $('#tab-empty').append(content);
+                    }
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(thrownError)
+                },
+                complete: function responce() {
+                    $("#tab-loading").addClass("hidden");
+                }
+            });
+        }
+
+
+        function openMenu(id) {
+
+            $("#menu-"+id+" a").trigger("click");
+        }
+        function showDesktop() {
+            $('[aria-labelledby^="tab--Admin"]').each(function () {
+                $(this).removeClass('active show');
+            });
+            $('[aria-labelledby^="tab-"]').each(function () {
+                $(this).removeClass('active show');
+            });
+            $('#tab-empty').css("display", "");
+        }
+        function removeShortcut(id) {
+             var result = confirm('@Resource.AreYouSureToDeleteShortcut');
+            if (result) {
+                $.ajax({
+                    cache: false,
+                    type: 'POST',
+                    url: '/UserShortcut/RemoveShortcut?id=' + id,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#tab-loading").removeClass("hidden");
+                    },
+                    success: function (data) {
+                        loadUserShortcuts();
+                        if (data.Result==true) {
+                            toastr.success(data.ErrorMessage)
+                        }
+                        else
+                            toastr.error(data.ErrorMessage)
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        toastr.error(thrownError)
+                    },
+                    complete: function responce() {
+                        $("#tab-loading").addClass("hidden");
+                    }
+                });
+            }
+        }
+    </script>
+
+
+
+</body>
+</html>

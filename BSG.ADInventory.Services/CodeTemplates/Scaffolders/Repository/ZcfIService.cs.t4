@@ -1,0 +1,30 @@
+<#@ template debug="true" language="C#" HostSpecific="True"  inherits="DynamicTransform" #>
+<#@ assembly name="System.Data.Entity" #>
+<#@ import namespace="System.Linq" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#@ Output Extension="cs" #>
+namespace <#= Model.RepositoryNamespace #>
+{ 	
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using BSG.ADInventory.Entities;
+    using Zcf.Services;
+	<# foreach(var ns in new[] { Model.ModelTypeNamespace, Model.DbContextNamespace }.Where(x => !string.IsNullOrEmpty(x) && (x != Model.RepositoryNamespace)).Distinct()) { #>
+using <#= ns #>;
+	<# } #>
+<# 
+    var modelType = (CodeType)Model.ModelType; 
+    var modelName = modelType.Name; 
+    var modelNamePlural = Model.ModelTypePluralized; 
+    var primaryKeyProperty = modelType.VisibleMembers().OfType<CodeProperty>().Single(x => x.Name == Model.PrimaryKey);    
+#>	
+    /// <summary>
+    /// Create Interface for <#= modelName #>Service
+    /// </summary>
+	public interface I<#= modelName #>Service : ICrudService<<#= modelName #>>
+	{        
+	}
+}

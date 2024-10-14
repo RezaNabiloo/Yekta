@@ -1,0 +1,250 @@
+﻿@model BSG.ADInventory.Entities.InvDoc
+@using BSG.ADInventory.Resources
+@{ ViewBag.EntityName = "MatPurchase";}
+
+@if (Model == null)
+{
+    <p class="w-100 text-center text-danger"><i class="fa-duotone fa-do-not-enter fa-lg"></i> گزارش ورود با شماره مورد نظر یافت نشد!!</p>
+}
+else if (Model.InvDocStatus == BSG.ADInventory.Common.Enum.InvDocStatus.Temporary)
+{
+    <p class="w-100 text-center text-danger"><i class="fa-duotone fa-do-not-enter fa-lg"></i> گزارش ورود مورد نظر قطی نشده و امکان ثبت قیمت خرید وجود ندارد!.</p>
+    <p class="w-100 text-center text-danger"> ابتدا سند مورد نظر را قطعی نمائید.</p>
+}
+else
+{
+    <fieldset class="form-group border pr-2 pl-2 col-md-12 pb-3 pt-3">
+        <legend class="w-auto px-2 text-gt-blue h6"> <i class="fa-duotone fa-truck-container fa-lg"></i><b> اطلاعات گزارش ورود</b></legend>
+        <div class="col-md-12">
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <i class="fa-duotone fa-memo-circle-check fa-lg text-blue"></i> @Html.LabelFor(model => model.DocNo) : @Html.DisplayFor(model => model.DocNo)
+                </div>
+                <div class="col-md-3">
+                    <i class="fa-duotone fa-roller-coaster fa-lg text-blue"></i> @Html.LabelFor(model => model.ProjectId) : @Html.DisplayFor(model => model.Project.Title)
+                </div>
+                <div class="col-md-3">
+                    <i class="fa-duotone fa-person-sign fa-lg text-blue"></i> @Html.LabelFor(model => model.ProviderId) : @Html.DisplayFor(model => model.Provider.Title)
+                </div>
+                <div class="col-md-3">
+                    <i class="fa-duotone fa-calendar-clock fa-lg text-blue"></i> @Html.LabelFor(model => model.CreateTime) : @Html.DisplayFor(model => model.CreateTime)
+                </div>
+            </div>
+
+            <table class="display table-hover table-striped table-sm preview-table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="table-col-sm pr-1">@Html.DisplayName(Resource.Proceedings)</th>
+                        <th class="table-col-sm pr-1">@Html.DisplayName(Resource.Id + " " + Resource.Mat)</th>
+                        <th class="table-col-sm pr-1">@Html.DisplayName(Resource.Code + " " + Resource.Mat)</th>
+                        <th class="pr-1">@Html.DisplayName(Resource.MatDescription)</th>
+                        <th class="pr-1">@Html.DisplayName(Resource.Qty)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.InvDocDetails)
+                    {
+                        <tr>
+                            <td class="table-action-menu"><button onclick="crudActionLocal(0, @item.InvDocId, @item.MatId, 'درج قیمت خرید', '')" class="btn btn-default table-action-buttom text-center" data-toggle="tooltip" data-placement="top" title="درج قیمت خرید"><i class="fas fa-plus fa-md text-success"></i></button></td>
+                            <td>@Html.DisplayFor(modelItem => item.MatId)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Mat.Code)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Mat.Title) - @Html.DisplayFor(modelItem => item.Mat.Brand.FaTitle) - @Html.DisplayFor(modelItem => item.Mat.TechnicalSpec)</td>
+                            <td>@Html.DisplayFor(modelItem => item.RealAmount) @Html.DisplayFor(modelItem => item.Mat.MatUnit.Title)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+
+    </fieldset>
+
+    <fieldset class="form-group border pr-2 pl-2 col-md-12">
+        <legend class="w-auto px-2 text-gt-blue h6"> <i class="fa-duotone fa-money-check-dollar-pen fa-lg"></i> <b>اطلاعات خرید</b></legend>
+
+
+        <table id="data-table-@ViewBag.EntityName" class="display table-hover table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="table-col-sm">@Html.Label(Resource.Proceedings)</th>
+                    <th>@Html.DisplayName(Resource.VDocNo)</th>
+                    <th>@Html.DisplayName(Resource.RDocNo)</th>
+                    <th>@Html.DisplayName(Resource.Id + " " + Resource.Mat)</th>
+                    <th>@Html.DisplayName(Resource.Code + " " + Resource.Mat)</th>
+                    <th>@Html.DisplayName(Resource.MatDescription)</th>
+                    <th>@Html.DisplayName(Resource.Qty)</th>
+                    <th>@Html.DisplayName(Resource.IsFreight)</th>
+                    <th>@Html.DisplayName(Resource.PurchasePrice)</th>
+                    <th>@Html.DisplayName(Resource.FreightPrice)</th>
+                </tr>
+            </thead>
+
+
+        </table>
+
+    </fieldset>
+
+    <script>
+
+     $(document).ready(function () {
+        var entity = '@ViewBag.EntityName';
+
+        $('#data-table-' + entity + ' thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#data-table-' + entity + ' thead');
+
+        table = $('#data-table-' + entity).DataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            response: true,
+            //lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "همه"]],
+            dom: 'ltr',
+            buttons: [
+            ],
+            retrieve: true,
+            Response: true,
+            order: [0, 'asc'],
+            bProcessing: true,
+            language: {
+                url: '/Content/plugins/datatables/fa.json'
+            },
+
+            aoColumns: [
+                {
+                    data: 'Id',
+                    render: function (data, type, row, meta) {
+                        return '<div class="btn-group show  table-action-menu">' +
+                            '<button type="button" class="btn btn-default dropdown-toggle text-center" data-toggle="dropdown" aria-expanded="true">' +
+                            '<span class="fas fa-ellipsis-h fa-sm text-black-50"></span>' +
+                            '</button>' +
+                            '<div class="dropdown-menu" role="menu">' +
+                            '<a class="dropdown-item" href="#" onclick="crudActionLocal(' + data + ',' + row.InvDocId + ',' + (row.matId??0) + ',\'ویرایش قیمت خرید\' , \'\')" > <i class="fal fa-edit fa-md"></i> @Resource.Edit</a > ' +
+                            '<a class="dropdown-item" href="#" onclick="DeleteItem(' + data + ',\'' + entity + '\',\'' + entity + '\')"><i class="fal fa-trash-alt fa-md"></i> @Resource.Delete</a>' +
+                            '</div>' +
+                            '</div>'
+                    }
+                    , class: 'action-col'
+                },
+                { data: 'VDocId' },
+                { data: 'DocNo' },
+                { data: 'MatId' },
+                { data: 'MatCode' },
+                { data: 'MatTitle' },
+
+                {
+                    data: 'Qty',
+                    render: function (data, type, row, meta) {
+                        return data + (row.MatUnit == null ? ' ' : row.MatUnit);
+                    }
+                },
+                {
+                    data: 'IsFreight',
+                    render: function (data, type, full, meta) {
+                        return data == true ? '<i class="fa-duotone fa-truck-fast fa-lg text-success"></i>' : '';
+                    }
+                },
+
+                { data: 'PurchasePrice' },
+                { data: 'FreightPrice' },
+
+            ],
+            bFilter: true,//Enables Filtering
+            bInfo: false,
+            bPaginate:false,
+            bServerSide: true,
+            sAjaxSource: '/' + entity + '/GetDataList?id='+'@Model.Id',
+            fnCreatedRow: function (nRow, aData, iDataIndex) {
+                $(nRow).attr('id', 'row-' + entity + '-' + aData['Id']);
+            },
+            initComplete: function () {
+
+                var api = this.api();
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('#data-table-' + entity + ' .filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" class="form-control" placeholder=" " />');
+
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('#data-table-' + entity + ' .filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            //? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            ? regexr.replace('{search}', this.value).replace('(', '').replace(')', '')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keydown', function (e) {
+                                if (e.key == '13') {
+                                    e.stopPropagation();
+
+                                    $(this).trigger('change');
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                }
+                            });
+                    });
+                $('#data-table-' + entity + ' tr.filters').addClass('visible-filters');
+            },
+        });
+
+    });
+
+    function crudActionLocal(id, invDocId, matId, title, modalSize) {
+        var entity = '@ViewBag.EntityName'
+
+        $.ajax({
+            cache: false,
+            type: 'GET',
+            url: '/' + entity +'/CrudAction'+ '?id=' + id+'&InvDocid='+invDocId+'&matId='+matId,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-" + entity).removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-rectangle-history-circle-plus fa-lg"></i> ' + title);
+                $('#modal-content-body').html(data);
+                if (modalSize != '') {
+                    $('#modal-content .modal-dialog').addClass(modalSize);
+                }
+                $('.select2').select2();
+                $('#modal-content').modal('toggle');
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-" + entity).addClass("hidden");
+                if ($.validator.unobtrusive != undefined) {
+                    $.validator.unobtrusive.parse("#partialForm");
+                }
+                else { toastr.error('Form validator not found.') }
+            }
+        });
+    }
+
+    </script>
+}

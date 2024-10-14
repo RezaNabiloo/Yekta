@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="yes"?>
+<ShebaConfig>
+  <BankCodes>
+  <BankCodes>
+    <BankName>شهر</BankName>
+    <BankCode>061</BankCode>
+    <Part_1>18</Part_1>
+    <Part_2>0</Part_2>
+    <Part_3>0</Part_3>
+    <Part_4>0</Part_4>
+  </BankCodes>
+    <BankName>اقتصاد نوین</BankName>
+    <BankCode>055</BankCode>
+    <Part_1>4</Part_1>
+    <Part_2>3</Part_2>
+    <Part_3>8</Part_3>
+    <Part_4>3</Part_4>
+  </BankCodes>
+  <BankCodes>
+    <BankName>پارسیان</BankName>
+    <BankCode>054</BankCode>
+    <Part_1>4</Part_1>
+    <Part_2>3</Part_2>
+    <Part_3>8</Part_3>
+    <Part_4>3</Part_4>
+  </BankCodes>
+  <BankCodes>
+    <BankName>گردشگری</BankName>
+    <BankCode>064</BankCode>
+    <Part_1>4</Part_1>
+    <Part_2>4</Part_2>
+    <Part_3>7</Part_3>
+    <Part_4>3</Part_4>
+  </BankCodes>
+</ShebaConfig>

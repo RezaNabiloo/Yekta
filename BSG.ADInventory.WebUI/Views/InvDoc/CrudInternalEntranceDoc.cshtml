@@ -1,0 +1,474 @@
+﻿@using BSG.ADInventory.Resources
+@model BSG.ADInventory.Models.InvDoc.InternalEntranceDocDataModel
+
+
+<form id="partialForm">
+
+    <div class="row">
+        <div class="col-md-3">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.InvDocTypeId)
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.ProjectId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.ProjectId, (SelectList)this.ViewBag.ProjectIds, new { @class = "form-control" })
+                    @this.Html.ValidationMessageFor(model => model.ProjectId)
+                </div>
+            </div>
+
+
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.SourceProjectId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.SourceProjectId, (SelectList)this.ViewBag.AllProjectIds, Resource.Select, new { @class = "form-control select2" })
+                    @this.Html.ValidationMessageFor(model => model.SourceProjectId)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12 mt-3">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.ReferenceInternalDocNo, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.ReferenceInternalDocNo, new { htmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.ReferenceInternalDocNo)
+
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.CarId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.CarId, (SelectList)this.ViewBag.CarIds, Resource.Select, new { @class = "form-control select2", @onchange = "javascript:SetCarSelectUI(this.value);" })
+                    @this.Html.ValidationMessageFor(model => model.CarId)
+                </div>
+            </div>
+            <div id="carDataBox">
+                <div class="editor-label-field col-md-12">
+                    <div class="requiredlable">
+                        @this.Html.LabelFor(model => model.CarTypeId, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownListFor(model => model.CarTypeId, (SelectList)this.ViewBag.CarTypeIds, Resource.Select, new { @class = "form-control select2" })
+                        @this.Html.ValidationMessageFor(model => model.CarTypeId)
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-12 mt-2">
+                    <div class="editor-label-field col-md-12 plate-logo">
+                        <div class="editor-field">
+                            <div class="row">
+                                <div class="col-md-2 plate-part-box series-number">
+                                    <p><b>ایـران</b></p>
+                                    @Html.EditorFor(model => model.PlateSeries, new { htmlAttributes = new { @class = "form-control", @placeholder = "_ _", @style = "" } })
+                                </div>
+
+                                <div class="col-md-3 plate-part-box">
+                                    @Html.EditorFor(model => model.PlateNumberPart2, new { htmlAttributes = new { @class = "form-control", @placeholder = "_ _ _", @style = "" } })
+                                </div>
+                                <div class="col-md-3 plate-part-box">
+                                    @Html.DropDownListFor(model => model.PlateCharacterId, (SelectList)this.ViewBag.PlateCharacterIds, "...", new { @class = "form-control" })
+                                </div>
+                                <div class="col-md-2 plate-part-box">
+                                    @Html.EditorFor(model => model.PlateNumberPart1, new { htmlAttributes = new { @class = "form-control", @placeholder = "_ _", @style = "" } })
+                                </div>
+                                <div class="col-md-1">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12 mt-3">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.DriverName, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.DriverName, new { htmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.DriverName)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.DriverPhone, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.DriverPhone, new { htmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.DriverPhone)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.WeighbridgeNo)
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.WeighbridgeNo, new { htmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.WeighbridgeNo)
+                </div>
+            </div>
+
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.Description)
+                </div>
+                <div class="editor-field">
+                    @this.Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = 2 })
+                    @this.Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="editor-label-field col-md-8">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.Material, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownList("MatId", (SelectList)this.ViewBag.MaterialIds, Resource.Select, new { @class = "form-control select2" })
+                        @this.Html.ValidationMessage("MatId")
+                    </div>
+                </div>
+
+                <div class="editor-label-field col-md-2 @((Model.InvDocTypeId != 1 && Model.InvDocTypeId != 2 && Model.InvDocTypeId != 3)?"hidden":"")">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.BOLAmount, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control", @type = "number", min = 0, @Value = "0" } })
+                        @this.Html.ValidationMessage("Amount")
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-2">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.RecivedAmount)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.Editor("RealAmount", new { htmlAttributes = new { @class = "form-control", @type = "number", min = 0, @Value = "0" } })
+                        @this.Html.ValidationMessage("RealAmount")
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-12 align-content-end">
+                    <div class="requiredlable">
+
+                    </div>
+                    <div class="editor-field">
+                        <a href="#" id="addItem" onclick="addItem()" class="btn btn-default btn-sm"><i class="fal fa-download fa-md text-green"></i> @Resource.Add @Resource.Mat</a>
+                        <a href="#" id="cancelItem" onclick="clearItem()" class="btn btn-default btn-sm"><i class="fal fa-times fa-md text-red"></i> @Resource.Cancel</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="detail-table" class="display table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="table-col-sm pr-1">@Html.DisplayName(Resource.Id + " " + Resource.Mat)</th>
+                                <th class="pr-1">@Html.DisplayName(Resource.MatDescription)</th>
+                                <th class="table-col-sm pr-1">@Html.DisplayName(Resource.BOLAmount)</th>
+                                <th class="table-col-sm pr-1">@Html.DisplayName(Resource.RecivedAmount)</th>
+                                <th class="table-col-sm pr-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr />
+        <button class="btn btn-default btn-sm" onclick="saveData()"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+        var MatList = [];
+
+    function ItemValidation() {
+        var result = true;
+        var matId = $('#MatId').val();
+
+            if ($('#MatId').val() == null || $('#MatId').val() == '') {
+                $('#MatId').addClass('input-validation-error');
+                result = false;
+            }
+            else
+                $('#MatId').removeClass('input-validation-error');
+
+        if ($('#Amount').val() == null || parseFloat($('#Amount').val()) <= 0){
+                $('#Amount').addClass('input-validation-error');
+                result = false;
+            }
+            else
+                $('#Amount').removeClass('input-validation-error');
+
+        //******* region check data duplicated in List
+        var exists = $.grep(MatList, function (e) { return e.MatId == matId; });
+        if (exists.length != 0) {
+
+                $('#MatId').addClass('input-validation-error');
+                toastr.error('@Resource.DuplicateData');
+                result= false;
+            }
+            else { $('#MatId').removeClass('input-validation-error'); }
+
+
+        return result;
+    }
+
+    function addItem() {
+
+        if (!ItemValidation())
+            return false;
+        var mat = {
+            MatId: parseInt($('#MatId').val()),
+            Title: $('#MatId option:selected').text(),
+            Amount: parseFloat($('#Amount').val()),
+            RealAmount: parseFloat($('#RealAmount').val()),
+        };
+
+
+
+            MatList.push(mat);
+            clearItem();
+            loadDocDet();
+        };
+
+        // Show Docdet list as table
+        function loadDocDet() {
+                $('#detail-table tbody').html('');
+            for (var i = 0; i < MatList.length; i++) {
+                $('#detail-table tbody').append('<tr>').append('<td>' + MatList[i].MatId).append('<td>' + MatList[i].Title).append('<td>' + MatList[i].Amount).append('<td>' + MatList[i].RealAmount).append('<td class="text-center">' + '<i class="fad fa-circle-xmark fa-2x text-red" onclick="removeItem(' + MatList[i].MatId + ')"></i>');
+
+                }
+             };
+
+
+
+    function clearItem() {
+        $('#Amount').val(0);
+        $('#RealAmount').val(0);
+      //  $('#ProjectDetailId').val('');
+
+    }
+
+    function removeItem(id) {
+        if (confirm('@Resource.AreYouSureToDeleteItem')) {
+            MatList = MatList.filter(i => i.MatId !== id);
+            loadDocDet();
+        }
+    }
+
+
+    function GenerateData()
+    {
+        var data = {
+            Id: $('#Id').val(),
+            ReferenceInternalDocNo: $('#ReferenceInternalDocNo').val(),
+            InvDocTypeId: $('#InvDocTypeId').val(),
+            SourceProjectId: $('#SourceProjectId').val(),
+            ProjectId: $('#ProjectId').val(),
+            CarId: $('#CarId').val(),
+            CarTypeId: $('#CarTypeId').val(),
+            DriverName: $('#DriverName').val(),
+            DriverPhone: $('#DriverPhone').val(),
+            WeighbridgeNo: $('#WeighbridgeNo').val(),
+            Description: $('#Description').val(),
+            PlateSeries: $('#PlateSeries').val(),
+            PlateNumberPart2: $('#PlateNumberPart2').val(),
+            PlateCharacterId: $('#PlateCharacterId').val(),
+            PlateNumberPart1: $('#PlateNumberPart1').val(),
+            Mats: MatList
+        }
+
+        return data;
+    }
+
+    $(document).ready(function () {
+
+        $('#Amount').focusout(function () {
+            if ($('#RealAmount').val() == 0) {
+                $('#RealAmount').val($('#Amount').val());
+            }
+        });
+
+        if ('@Model.Mats.Count()' > 0)
+        {
+            MatList=(@(new HtmlString(Json.Encode(Model.Mats))))
+            loadDocDet();
+        }
+
+        $('.select2').select2();
+
+        if ($('#CarId').val() == '') {
+            $('#carDataBox').removeClass('hidden');
+        }
+        else {
+            $('#carDataBox').addClass('hidden');
+        }
+    });
+
+
+
+    function saveData() {
+        if (!$('#partialForm').valid())
+            return;
+
+        if (MatList.length == 0) {
+            toastr.error('هیچ کالایی در سند وجو ندارد');
+            return;
+        }
+
+        $.ajax({
+            url: "/InvDoc/SetInternalEntranceDoc",
+            data: GenerateData(),
+                cache: false,
+                type: "POST",
+                beforeSend: function () {
+                    $("#overly-loading-modal").removeClass("hidden");
+                },
+                success: function (response) {
+                    if (response.Result == true) {
+                        toastr.success(response.ErrorMessage);
+                        $('#modal-content').modal('toggle');
+                        LoadData('@Model.InvDocTypeId');
+                    }
+                    else {
+                        toastr.error(response.ErrorMessage);
+                    }
+
+                },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(xhr.responseText);
+                //return false;
+                },
+            complete: function responce() {
+                $("#overly-loading-modal").addClass("hidden");
+            }
+                });
+
+
+    }
+      function SetCarSelectUI(id) {
+        var entity = '@ViewBag.EntityName';
+        if (id != '' && id != null) {
+            $.ajax({
+            url: "/Car/GetCarInfo/"+id,
+
+                cache: false,
+                type: "GET",
+                beforeSend: function () {
+                    $("#overly-loading-"+entity).removeClass("hidden");
+                },
+                success: function (response) {
+                    if (response.Result != null) {
+                        $('#DriverName').val(response.Result.OwnerDriverName)
+                        $('#DriverPhone').val(response.Result.OwnerDriverPhoneNumber)
+                        $('#CarTypeId').val(response.Result.CarTypeId).trigger('change');
+                        $('#PlateSeries').val(response.Result.PlateSeries)
+                        $('#PlateCharacterId').val(response.Result.PlateCharacterId)
+                        $('#PlateNumberPart1').val(response.Result.PlateNumberPart1)
+                        $('#PlateNumberPart2').val(response.Result.PlateNumberPart2)
+                        $('#carDataBox').addClass('hidden');
+                    }
+                    else {
+                        toastr.error(response.ErrorMessage);
+                    }
+
+                },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(xhr.responseText);
+
+                },
+            complete: function responce() {
+                $("#overly-loading-"+entity).addClass("hidden");
+            }
+                });
+
+        }
+        else {
+            $('#DriverName').val('')
+            $('#DriverPhone').val('')
+            $('#CarTypeId').val('').trigger('change');
+            $('#PlateSeries').val('')
+            $('#PlateCharacterId').val('')
+            $('#PlateNumberPart1').val('')
+            $('#PlateNumberPart2').val('')
+            $('#carDataBox').removeClass('hidden');
+        }
+
+    }
+
+
+    $('#Search_ReferenceInternalDocNo').click(function () {
+        var DocNo = $('#ReferenceInternalDocNo').val();
+        var ProjectId = $('#ProjectId').val();
+
+        $.ajax({
+            url: "/InvDoc/GetInternalBOLDocData",
+            data: {docNo:DocNo, projectId:ProjectId},
+                cache: false,
+                type: "GET",
+                beforeSend: function () {
+                    $("#overly-loading-modal").removeClass("hidden");
+                },
+                success: function (response) {
+                    if (response.Result != null) {
+
+                        /*$('#modal-content').modal('toggle');*/
+                        @*LoadData('@Model.InvDocTypeId');*@
+                        alert(response.Result.DestProjectId)
+                        $('#SourceProjectId').val(response.Result.DestProjectId).trigger('change');
+                        $('#CarTypeId').val(response.Result.CarTypeId);
+                        $('#CarId').val(response.Result.CarId).trigger('change');
+                        $('#PlateCharacterId').val(response.Result.PlateCharacterId);
+                        $('#PlateSeries').val(response.Result.PlateSeries);
+                        $('#PlateNumberPart1').val(response.Result.PlateNumberPart1);
+                        $('#PlateNumberPart2').val(response.Result.PlateNumberPart2);
+                        $('#DriverName').val(response.Result.DriverName);
+                        $('#DriverPhone').val(response.Result.DriverPhone);
+
+                        //MatList.empty();
+
+                        $.each(response.Result.Mats, function (key, value) {
+                                           var mat = {
+                                                MatId: value.MatId,
+                                               Title: value.Title,
+                                               Amount: value.RealAmount,
+                                               RealAmount: value.RealAmount
+                            };
+                            MatList.push(mat);
+                        });
+                        loadDocDet();
+
+                        toastr.success(response.ErrorMessage);
+                    }
+                    else {
+                        toastr.error(response.ErrorMessage);
+                    }
+
+                },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(xhr.responseText);
+                },
+            complete: function responce() {
+                $("#overly-loading-modal").addClass("hidden");
+            }
+                });
+    });
+</script>
+
+

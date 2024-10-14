@@ -1,0 +1,255 @@
+﻿@using BSG.ADInventory.Resources
+
+<style>
+    [aria-selected="true"] {
+        font-weight: bold;
+        /*font-size: 14px;*/
+        /*background-color: #325980 !important;
+        border-color: #325980 !important;
+        color: #fff !important;*/
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">                            
+                            <div class="col-md-6 col-sm-12" id="card-title"><h4 class="card-title w-100 text-lg-left text-xl-left text-md-left text-sm-center"><i class="fad fa-memo-circle-check fa-lg"></i> @Resource.InvDoc</h4></div>
+                            <div class="col-md-6 col-sm-12" id="card-buttons">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="overlay-wrapper hidden" id="overly-loading-desktop">
+                            <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                        </div>
+                        <ul class="nav nav-tabs icon-nav-tabs justify-content-center beat-fade" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active text-center" data-toggle="pill" href="#tab1" role="tab"><i class="fa-duotone fa-truck-container fa-2x d-block"></i>گزارش ورود</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-center" data-toggle="pill" href="#tab2" role="tab"><i class="fa-duotone fa-truck-arrow-right fa-2x d-block"></i>گزارش ورود داخلی</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-center" data-toggle="pill" href="#tab3" role="tab"><i class="fa-duotone fa-people-carry-box fa-2x d-block"></i>حواله مصرف</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-center" data-toggle="pill" href="#tab4" role="tab"><i class="fa-duotone fa-person-dolly fa-2x d-block"></i>برگشت از مصرف</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-center" data-toggle="pill" href="#tab5" role="tab"><i class="fa-duotone fa-square-arrow-up-right fa-2x d-block"></i>بارنامه داخلی</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-center" data-toggle="pill" href="#tab6" role="tab"><i class="fa-duotone fa-arrow-up-right-from-square fa-2x d-block"></i>بارنامه خارجی</a>
+                            </li>
+
+                        </ul>
+
+                        <div id="tab-content" class="pt-2">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+        $(document).ready(function () {
+            LoadData("1");
+        });
+
+        $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+            var tabId = $(e.target).attr("href").match(/\d+/);
+            LoadData(tabId.toString());
+
+        });
+        function LoadData(id) {
+
+            var urlAddress = '';
+
+            switch (id) {
+                case '1': urlAddress = '/InvDoc/EntranceDoc'; break;
+                case '2': urlAddress = '/InvDoc/InternalEntranceDoc'; break;
+                case '3': urlAddress = '/InvDoc/UseDoc'; break;
+                case '4': urlAddress = '/InvDoc/ReturnDoc'; break;
+                case '5': urlAddress = '/InvDoc/InternalBOLDoc'; break;
+                case '6': urlAddress = '/InvDoc/ExternalBOLDoc'; break;
+                default: break;
+            }
+
+            //urlAddress = "/InvDoc/GetInvDocs/" + id;
+
+            if (urlAddress != "") {
+                $.ajax({
+                    cache: true,
+                    type: "GET",
+                    url: urlAddress,
+                    dataType: "html",
+                    beforeSend: function () {
+                        $("#overly-loading-desktop").removeClass("hidden");
+                    },
+                    success: function (data) {
+                        $('#tab-content').html(data);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        toastr.error(thrownError)
+                    },
+                    complete: function responce() {
+
+                        $("#overly-loading-desktop").addClass("hidden");
+                    }
+                });
+            }
+        }
+
+        function confirmInvDoc(id, tableName)
+        {
+            if (confirm('@Resource.AreYouShureToWantFinalizeDocument')) {
+                $.ajax({
+                    cache: true,
+                    type: "POST",
+                    url: '/InvDoc/ConfirmInvDoc?id=' + id,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#overly-loading-desktop").removeClass("hidden");
+                    },
+                    success: function (data) {
+                        if (data.Result == true) {
+                            toastr.success(data.ErrorMessage);
+                            $('#data-table-' + tableName).dataTable().api().ajax.reload();
+                        }
+                        else {
+                            toastr.error(data.ErrorMessage)
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        toastr.error(thrownError)
+                    },
+                    complete: function responce() {
+
+                        $("#overly-loading-desktop").addClass("hidden");
+                    }
+                });
+            }
+        }
+
+    function uploadFile(id, entity) {                
+            $.ajax({                
+                type: 'GET',
+                url: '/InvDoc/GetInvDocAttachmentFile/',
+                data: { invDocId:id, entityName:entity},                
+                dataType: "html",
+                beforeSend: function () {
+                    $("#overly-loading-desktop").removeClass("hidden");
+                },
+                success: function (data) {
+                    $('#modal-content-title').html('<i class="fad fa-rectangle-history-circle-plus fa-lg"></i> ' + 'بارگذاری فایل');
+                    $('#modal-content-body').html(data);
+                    $('#modal-content').modal('toggle');
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(thrownError)
+                },
+                complete: function responce() {
+                    $("#overly-loading-desktop").addClass("hidden");
+                }
+            });
+        }
+
+        function showAttachments(id)
+        {
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                url: '/InvDocAttachment/GetAttachments?id=' + id,
+                dataType: "html",
+                beforeSend: function () {
+                    $("#overly-loading-desktop").removeClass("hidden");
+                },
+                success: function (data) {
+                    $('#modal-content-title').html('<i class="fad fa-paperclip fa-lg"></i> ' + 'لیست پیوست‌ها');
+                    $('#modal-content-body').html(data);
+                    $('#modal-footer').removeClass('hidden');
+                    $('#modalBtnCancel').removeClass('hidden');
+                    $('#modal-content').modal('toggle');
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(thrownError)
+                },
+                complete: function responce() {
+                    $("#overly-loading-desktop").addClass("hidden");
+                }
+            });
+        }
+
+        function downloadFile(id) {
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                url: '/InvDocAttachment/GetAttachments?id=' + id,
+                dataType: "html",
+                beforeSend: function () {
+                    $("#overly-loading-modal").removeClass("hidden");
+                },
+                success: function (response) {
+                    var blob = new Blob([response], { type: 'application/ms-excel;' });
+                    var downloadUrl = URL.createObjectURL(blob);
+                    var a = document.createElement("a");
+                    a.href = downloadUrl;
+                    a.download = "";
+                    document.body.appendChild(a);
+                    a.click();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(thrownError)
+                },
+                complete: function responce() {
+                    $("#overly-loading-modal").addClass("hidden");
+                }
+            });
+    }
+
+        function Print(id) {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Report/PrintInvDoc?id=" + id,
+            dataType: "html",
+            beforeSend: function () {
+                $("#overly-loading-desktop").removeClass("hidden");
+            },
+            success: function (data) {
+                $('#modal-content-title').html('<i class="fad fa-print fa-lg"></i> چاپ سند');
+                $('#modal-content-body').html(data);
+
+                $('#modalBtnCancel').removeClass('hidden');
+
+                $('#modal-content .modal-dialog').addClass('modal-xl');
+                $('#modal-content').modal('toggle');
+                //$(function () {
+                //    $('#modalBtnPrint').unbind('click').bind('click', function (e) {
+                //        SaveInvDoc();
+                //    });
+                //});
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+            },
+            complete: function responce() {
+                $("#overly-loading-desktop").addClass("hidden");                
+            }
+
+        });
+
+    }
+
+
+</script>

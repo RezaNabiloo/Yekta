@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{163C8EB9-7AF3-4D50-AA42-A361121BDA94}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BSG.ADInventory.Data</RootNamespace>
+    <AssemblyName>BSG.ADInventory.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqKit">
+      <HintPath>..\Dlls\LinqKit.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Zcf.Core">
+      <HintPath>..\Dlls\Zcf.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Data">
+      <HintPath>..\Dlls\Zcf.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Entities">
+      <HintPath>..\Dlls\Zcf.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Paging">
+      <HintPath>..\Dlls\Zcf.Paging.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Security">
+      <HintPath>..\Dlls\Zcf.Security.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseEntityRepository.cs" />
+    <Compile Include="ADInventoryContext.cs" />
+    <Compile Include="BrandRepository.cs" />
+    <Compile Include="CarTypeRepository.cs" />
+    <Compile Include="InvYearCycleRepository.cs" />
+    <Compile Include="CalendarYearRepository.cs" />
+    <Compile Include="CalendarMonthRepository.cs" />
+    <Compile Include="ICalendarMonthRepository.cs" />
+    <Compile Include="ICalendarYearRepository.cs" />
+    <Compile Include="IInvYearCycleRepository.cs" />
+    <Compile Include="IPurchaseDocAttachmentRepository.cs" />
+    <Compile Include="IMatOrderDetailRepository.cs" />
+    <Compile Include="PurchaseDocAttachmentRepository.cs" />
+    <Compile Include="IPurchaseDocDetailRepository.cs" />
+    <Compile Include="IPurchaseDocRepository.cs" />
+    <Compile Include="MatOrderDetailRepository.cs" />
+    <Compile Include="MatOrderRepository.cs" />
+    <Compile Include="IMatOrderRepository.cs" />
+    <Compile Include="IUserShortcutRepository .cs" />
+    <Compile Include="MatPurchaseRepository.cs" />
+    <Compile Include="IMatPurchaseRepository.cs" />
+    <Compile Include="InvDocAttachmentRepository.cs" />
+    <Compile Include="IInvDocAttachmentRepository.cs" />
+    <Compile Include="InvDocDetailRepository.cs" />
+    <Compile Include="IInvDocDetailRepository.cs" />
+    <Compile Include="IInvDocTypeRepository.cs" />
+    <Compile Include="InvDocTypeRepository.cs" />
+    <Compile Include="InvDocRepository.cs" />
+    <Compile Include="ICarTypeRepository.cs" />
+    <Compile Include="IInvDocRepository.cs" />
+    <Compile Include="IProjectDetailRepository.cs" />
+    <Compile Include="ProjectDetailRepository.cs" />
+    <Compile Include="ProjectRepository .cs" />
+    <Compile Include="ProdiverRepository.cs" />
+    <Compile Include="CountryRepository.cs" />
+    <Compile Include="CustomLinq\ExpressionHelpers.cs" />
+    <Compile Include="CustomLinq\SwapingVisitor.cs" />
+    <Compile Include="DatabaseConfiguration.cs" />
+    <Compile Include="Enum\EntityState.cs" />
+    <Compile Include="Hooks\HookedEntityEntry.cs" />
+    <Compile Include="Hooks\HookEntityMetadata.cs" />
+    <Compile Include="Hooks\IHook.cs" />
+    <Compile Include="Hooks\IPostActionHook .cs" />
+    <Compile Include="Hooks\IPreActionHook.cs" />
+    <Compile Include="Hooks\PostActionHook.cs" />
+    <Compile Include="Hooks\PostDeleteHook.cs" />
+    <Compile Include="Hooks\PostInsertHook.cs" />
+    <Compile Include="Hooks\PostUpdateHook.cs" />
+    <Compile Include="Hooks\PreActionHook.cs" />
+    <Compile Include="Hooks\PreDeleteHook.cs" />
+    <Compile Include="Hooks\PreInsertHook.cs" />
+    <Compile Include="Hooks\PreUpdateHook.cs" />
+    <Compile Include="IBaseEntityRepository.cs" />
+    <Compile Include="IProjectRepository .cs" />
+    <Compile Include="IBrandRepository .cs" />
+    <Compile Include="IProviderRepository .cs" />
+    <Compile Include="ICountryRepository.cs" />
+    <Compile Include="IMatGroupRepository .cs" />
+    <Compile Include="IMatGroupTechSpecRepository .cs" />
+    <Compile Include="IMatRepository .cs" />
+    <Compile Include="IMatUnitRepository.cs" />
+    <Compile Include="IMenuRepository.cs" />
+    <Compile Include="IMenusInRoleRepository.cs" />
+    <Compile Include="ICarRepository.cs" />
+    <Compile Include="IPeopleRepository.cs" />
+    <Compile Include="IPlateCharacterRepository.cs" />
+    <Compile Include="IProvinceRepository.cs" />
+    <Compile Include="IRoleRepository.cs" />
+    <Compile Include="ISqlCommandRepository.cs" />
+    <Compile Include="ITimesheetWeekDayRepository.cs" />
+    <Compile Include="ITownshipRepository.cs" />
+    <Compile Include="IUserMenuRepository.cs" />
+    <Compile Include="IUserRepository.cs" />
+    <Compile Include="MatGroupRepository.cs" />
+    <Compile Include="MatGroupTechSpecRepository.cs" />
+    <Compile Include="MatRepository.cs" />
+    <Compile Include="MatUnitRepository.cs" />
+    <Compile Include="MenuRepository.cs" />
+    <Compile Include="MenusInRoleRepository.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="CarRepository.cs" />
+    <Compile Include="PeopleRepository.cs" />
+    <Compile Include="PlateCharacterRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProvinceRepository.cs" />
+    <Compile Include="PurchaseDocDetailRepository.cs" />
+    <Compile Include="PurchaseDocRepository.cs" />
+    <Compile Include="RoleRepository.cs" />
+    <Compile Include="SqlCommandRepository.cs" />
+    <Compile Include="TownshipRepository.cs" />
+    <Compile Include="UserMenuRepository.cs" />
+    <Compile Include="UserRepository.cs" />
+    <Compile Include="UserShortcutRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="CodeTemplates\Scaffolders\Scaffolders_94-04-02_ok.rar" />
+    <None Include="CodeTemplates\Scaffolders\View\Create.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\View\CreateOrEdit.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\View\Delete.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\View\Details.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\View\Edit.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\View\Empty.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\View\Index.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\View\ZcfView.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\ZcfRepository.7z" />
+    <None Include="CodeTemplates\Scaffolders\ZcfRepository\ZcfAllRepository.ps1" />
+    <None Include="CodeTemplates\Scaffolders\ZcfRepository\ZcfController.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\ZcfRepository\ZcfIRepository.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\ZcfRepository\ZcfIService.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\ZcfRepository\ZcfRepository.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\ZcfRepository\ZcfService.cs.t4" />
+    <None Include="CodeTemplates\Scaffolders\ZcfRepository\ZcfSingleRepository.ps1" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BSG.ADInventory.Common\BSG.ADInventory.Common.csproj">
+      <Project>{f8df49f6-1ec5-4a69-896f-a6b0cdbb4bd9}</Project>
+      <Name>BSG.ADInventory.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BSG.ADInventory.Entities\BSG.ADInventory.Entities.csproj">
+      <Project>{5339a015-c406-47ad-935b-50402cb91557}</Project>
+      <Name>BSG.ADInventory.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BSG.ADInventory.Models\BSG.ADInventory.Models.csproj">
+      <Project>{8fef2060-b56d-46fb-8282-c197c9cf2220}</Project>
+      <Name>BSG.ADInventory.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BSG.ADInventory.Resources\BSG.ADInventory.Resources.csproj">
+      <Project>{a6ae46de-2864-404b-875f-4973b9758a63}</Project>
+      <Name>BSG.ADInventory.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>

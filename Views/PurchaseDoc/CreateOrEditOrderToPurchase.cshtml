@@ -1,0 +1,198 @@
+﻿@model BSG.ADInventory.Models.PurchaseDoc.PurchaseDocDataModel
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "PurchaseDoc";}
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-'+'@ViewBag.EntityName').dataTable().api().ajax.reload();
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+            <div class="editor-label-field col-md-3">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.ProviderId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.ProviderId, (SelectList)this.ViewBag.ProviderIds, Resource.Select, new { @class = "select2 form-control" })
+                    @this.Html.ValidationMessageFor(model => model.ProviderId)
+                </div>
+            </div>
+            <div class="col-md-9"></div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-5">
+                        <fieldset class="form-group border pr-2 pl-2">
+                            <legend class="w-auto px-2"><i class="fa-duotone fa-bag-shopping text-success"></i> @Resource.PurchaseOrder</legend>
+
+                            <table class="mb-2 table table-hover" id="tblPurchaseDocItems">
+                                <thead>
+                                    <tr>
+                                        <td>@Resource.Row</td>
+                                        <td>@Resource.RequestCode</td>
+                                        <td>@Resource.MatCode</td>
+                                        <td>@Resource.MatDescription</td>
+                                        <td>@Resource.Amount</td>
+                                        <td>@Resource.Unit</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                    </div>
+                    <div class="col-md-7">
+                        <fieldset class="form-group border pr-2 pl-2">
+                            <legend class="w-auto px-2"><i class="fa-duotone fa-starfighter-twin-ion-engine-advanced text-gt-blue"></i> @Resource.Orders</legend>
+                            <table class="mb-2 table table-hover" id="tblOrders">
+                                <thead>
+                                    <tr>
+                                        <td>@Resource.Row</td>
+                                        <td>@Resource.MatCode</td>
+                                        <td>@Resource.MatDescription</td>
+                                        <td>@Resource.RequiredAmount</td>
+                                        <td>@Resource.Unit</td>
+                                        <td>@Resource.Project</td>
+                                        <td>@Resource.RequiredDate</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="button" class="btn btn-default btn-sm" onclick="SaveRequestToOrder()"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+
+}
+<script>
+    var openOrders=[];
+    var purchaseDocItems=[];
+    $(document).ready(function () {
+        $('.select2').select2();
+        openOrders = @Html.Raw(Json.Encode(@ViewBag.OpenOrders));
+        generateOrderTable(openOrders);
+
+    });
+
+    function generateOrderTable() {
+        $('#tblOrders tbody').html('');
+        $.each(openOrders, function (i, item) {            
+            var $tr = $('<tr role="button" ondblclick="addPurchaseDoc(' + item.Id +')">').append(
+                $('<td>').text(i+1),
+                $('<td>').text(item.MatId),
+                $('<td>').text(item.MatTitle),
+                $('<td>').text(item.Amount),
+                $('<td>').text(item.MatUnit),
+                $('<td>').text(item.Project),
+                $('<td>').text(new Date(parseInt(item.RequiredDate.substr(6))).toLocaleDateString('fa-IR'))
+            ).appendTo('#tblOrders');
+        });
+    }
+    function generatePurchaseDocTable() {
+        $('#tblPurchaseDocItems tbody').html('');        
+        $.each(purchaseDocItems, function (i, item) {
+            var $tr = $('<tr class="table-success" role="button" ondblclick="removePurchaseDoc(' + item.Id +')">').append(
+                $('<td>').text(i + 1),
+                $('<td>').text(item.MatOrderId),
+                $('<td>').text(item.MatId),
+                $('<td>').text(item.MatTitle),
+                $('<td>').text(item.Amount),
+                $('<td>').text(item.MatUnit)
+            ).appendTo('#tblPurchaseDocItems');
+        });
+    }
+
+
+    function addPurchaseDoc(id) {        
+        let result = openOrders.find(({ Id }) => Id == id);
+        if (result != null) {            
+            purchaseDocItems.push(result);            
+            openOrders = $.grep(openOrders, function (e) { return e.Id != id })
+            generateOrderTable();
+            generatePurchaseDocTable();
+        }
+
+    }
+    function removePurchaseDoc(id) {
+        let result = purchaseDocItems.find(({ Id }) => Id == id);
+        if (result != null) {
+            openOrders.push(result);
+            purchaseDocItems = $.grep(purchaseDocItems, function (e) { return e.Id != id })
+            generateOrderTable();
+            generatePurchaseDocTable();
+        }
+
+    }
+
+
+    function GenerateData() {
+        var MatList = [];
+        $.each(purchaseDocItems, function (i, item) {
+            var item = {
+                MatId: item.MatId,
+                Amount: item.Amount,
+                MatOrderDetailId: item.MatOrderDetailId
+            }
+
+            MatList.push(item);
+        });
+        var data = {
+            Id: $('#Id').val(),
+            ProviderId: $('#ProviderId').val(),
+            Details: MatList
+        }        
+        return data;
+    }
+
+    function SaveRequestToOrder() {
+        if (!$('#partialForm').valid())
+            return;
+
+
+       // console.log(GenerateData());
+        return
+        $.each(purchaseDocItems, function (i, item) {
+            var item = {
+                MatId: item.MatId,
+                Amount: item.Amount,
+                MatOrderDetailId: item.MatOrderDetailId
+            }
+
+            data.Details.push(item);
+        });
+        console.log(data);
+        //$.each(purchaseDocItems, function (i, item) {
+        //    var item = {
+        //        MatId: item.MatId,
+        //        Amount: item.Amount,
+        //        MatOrderDetailId: item.MatOrderDetailId
+        //    }
+        //    var $tr = $('<tr class="table-success" role="button" ondblclick="removePurchaseDoc(' + item.Id + ')">').append(
+        //        $('<td>').text(i + 1),
+        //        $('<td>').text(item.MatOrderId),
+        //        $('<td>').text(item.MatId),
+        //        $('<td>').text(item.MatTitle),
+        //        $('<td>').text(item.Amount),
+        //        $('<td>').text(item.MatUnit)
+        //    ).appendTo('#tblPurchaseDocItems');
+        //});
+
+    }
+</script>

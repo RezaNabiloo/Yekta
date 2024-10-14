@@ -1,0 +1,56 @@
+﻿@using BSG.ADInventory.Resources
+@model BSG.ADInventory.Models.Account.LoginModel
+
+@{
+    ViewBag.Title = Resource.Login;
+    Layout = "~/Views/Shared/_LogInLayout.cshtml";
+}
+<div class="login-area login-s2">
+    <div class="container">
+        <div class="login-box ptb--100">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "login100-form validate-form p-l-55 p-r-55 p-t-70", role = "form" }))
+            {
+            <div class="login-form-head mb-2">
+                <img src="~/Images/ZPlogo.png" />
+                <h5 class="text-black-50"><b>شرکت زنگان پرشــیا</b></h5>                
+                <p>سامانه یکپارچه مدیریت انبارهای غیر متمرکز</p>
+            </div>
+                <div class="login-form-body pt-5 mt-5">
+                    <div class="form-gp">
+                        <i class="fas fa-user"></i>
+                        @Html.TextBoxFor(m => m.LoginUserName, new { @class = "form-control text-left", @placeholder = "نام کاربری" })
+
+                        <div class="text-danger"></div>
+                    </div>
+                    <div class="form-gp">
+                        <i class="fas fa-lock"></i>
+                        @Html.PasswordFor(m => m.LoginPassword, new { @class = "form-control text-left", @placeholder = "رمز عبور" })
+
+                        <div class="text-danger"></div>
+                    </div>
+                    <div class="submit-btn-area">
+                        <button id="form_submit" type="submit">
+                            ورود به سامانه
+                            <i class="far fa-arrow-alt-circle-right fa-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-footer text-center mt-5">
+                    @*<img src="~/Images/Public/Logo/BSsmallLogo.png" />*@
+                    <div class="text-center text-gray">
+                        <i class="fad fa-mobile la-lg"></i>
+                        <i class="fad fa-tablet la-lg"></i>
+                        <i class="fad fa-laptop la-lg"></i>
+                        <i class="fad fa-display la-lg"></i>
+                    </div>
+                    @*<img src="~/Images/Public/Logo/BSsmallLogo.png" />*@
+        <p class="title pt-0 mt-0">توسعه نرم‌افــزار <b>بیــدار</b></p>
+        <p class="pt-0 mt-0"><a href="https://www.bidarsoft.com" target="_blank">www.bidarsoft.com</a></p>
+                </div>
+                
+            }
+
+        </div>
+    </div>
+</div>

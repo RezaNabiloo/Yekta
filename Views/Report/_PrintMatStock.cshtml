@@ -1,0 +1,37 @@
+﻿@using Stimulsoft.Report.Mvc;
+@using Stimulsoft.Report.Web;
+@using System.Web.UI.WebControls;
+@{
+
+    Layout = null;    
+}
+
+    @Html.Stimulsoft().StiMvcViewer("StiMvcViewer1", new StiMvcViewerOptions()
+{
+    Actions =
+        {
+            GetReport = "GetPrintMatStock",
+            ViewerEvent = "ViewerEvent"
+        },
+    Localization="fa",
+    Appearance =
+        {
+            BackgroundColor = System.Drawing.Color.FromArgb(0xe8, 0xe8, 0xe8),
+            ScrollbarsMode = true,
+            RightToLeft=true
+
+        },
+    Toolbar =
+        {
+            DisplayMode = StiToolbarDisplayMode.Simple,
+            ViewMode=StiWebViewMode.MultiplePages,
+            //Zoom=StiZoomMode.PageWidth
+
+},
+
+    Width = Unit.Percentage(100),
+    Height = Unit.Percentage(100),
+})
+
+
+

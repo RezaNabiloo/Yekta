@@ -1,0 +1,57 @@
+﻿@model BSG.ADInventory.Entities.MatPurchase
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "MatPurchase";}
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-'+'@ViewBag.EntityName').dataTable().api().ajax.reload();
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.VDocId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.VDocId, new { HtmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.VDocId)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.PurchasePrice)
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.PurchasePrice, new { HtmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.PurchasePrice)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12 @(Model.Id>0?"hidden":"")">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.IsFreight)
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.IsFreight, new List<SelectListItem>()
+                    {
+                       new SelectListItem() { Text = Resource.Yes, Value = "True" },
+                       new SelectListItem() { Text = Resource.No, Value = "False"}
+                    }, new { @id = "IsFreight", @class = "form-control" })
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+}
+

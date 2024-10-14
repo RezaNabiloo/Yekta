@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8FEF2060-B56D-46FB-8282-C197C9CF2220}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BSG.ADInventory.Models</RootNamespace>
+    <AssemblyName>BSG.ADInventory.Models</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\Dlls\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Zcf.Common">
+      <HintPath>..\Dlls\Zcf.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Core">
+      <HintPath>..\Dlls\Zcf.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Data">
+      <HintPath>..\Dlls\Zcf.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Entities">
+      <HintPath>..\Dlls\Zcf.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Globalization">
+      <HintPath>..\Dlls\Zcf.Globalization.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Paging">
+      <HintPath>..\Dlls\Zcf.Paging.dll</HintPath>
+    </Reference>
+    <Reference Include="Zcf.Utilities">
+      <HintPath>..\Dlls\Zcf.Utilities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Account\ChangeModelPassword.cs" />
+    <Compile Include="Account\Criteria.cs" />
+    <Compile Include="Account\DeleteUserViewModel.cs" />
+    <Compile Include="Account\LoginModel.cs" />
+    <Compile Include="Account\SimpleLoginModel.cs" />
+    <Compile Include="AutoComplete\AutoComplete.cs" />
+    <Compile Include="BaseModel\BaseDTO.cs" />
+    <Compile Include="BaseModel\BaseTrnCEDTO.cs" />
+    <Compile Include="BaseModel\BaseTrnListDTO.cs" />
+    <Compile Include="Branch\BranchInfoViewModel.cs" />
+    <Compile Include="Branch\BranchModel.cs" />
+    <Compile Include="Branch\BranchSecurityInfoModel.cs" />
+    <Compile Include="Brand\BrandCEDTO.cs" />
+    <Compile Include="Brand\BrandListDTO.cs" />
+    <Compile Include="Brand\BrandListVM.cs" />
+    <Compile Include="CarType\CarTypeCEDTO.cs" />
+    <Compile Include="CarType\CarTypeListDTO.cs" />
+    <Compile Include="Car\CarInfoVM.cs" />
+    <Compile Include="CalendarYear\CalendarYearListModel.cs" />
+    <Compile Include="Country\CountryCEDTO.cs" />
+    <Compile Include="Country\CountryListDTO.cs" />
+    <Compile Include="DataTable\DataTableHelper.cs" />
+    <Compile Include="DataTable\JqDataTable.cs" />
+    <Compile Include="MatGroup\MatGroupCEDTO.cs" />
+    <Compile Include="MatGroup\MatGroupListDTO.cs" />
+    <Compile Include="MatGroup\MatGroupListVM.cs" />
+    <Compile Include="MatGroup\MatGroupVM.cs" />
+    <Compile Include="MatUnit\MatUnitCEDTO.cs" />
+    <Compile Include="MatUnit\MatUnitListDTO.cs" />
+    <Compile Include="Mat\MatCEDTO.cs" />
+    <Compile Include="ProjectDetail\ProjectDetailCEDTO.cs" />
+    <Compile Include="Province\ProvinceCEDTO.cs" />
+    <Compile Include="Province\ProvinceListDTO.cs" />
+    <Compile Include="PurchaseDocDetail\PurchaseDocDetailListModel.cs" />
+    <Compile Include="PurchaseDoc\PurchaseDocOnWayListModel.cs" />
+    <Compile Include="PurchaseDoc\PurchaseDocInvTransactionListModel.cs" />
+    <Compile Include="PurchaseDoc\PurchaseDocFollowListModel.cs" />
+    <Compile Include="PurchaseDocAttachment\PurchaseDocAttachmentDataModel.cs" />
+    <Compile Include="PurchaseDocAttachment\PurchaseDocAttachmentListModel.cs" />
+    <Compile Include="MatOrderDetail\MatOrderDetailCEDTO.cs" />
+    <Compile Include="MatOrderDetail\MatOrderDetailConfirmModel.cs" />
+    <Compile Include="MatOrderDetail\MatOrderDetailInfoListModel.cs" />
+    <Compile Include="MatOrderDetail\MatOrderDetailListModel.cs" />
+    <Compile Include="MatOrder\MatOrderConfirmModel.cs" />
+    <Compile Include="MatOrder\MatOrderCEDTO.cs" />
+    <Compile Include="MatOrder\MatOrderListDTO.cs" />
+    <Compile Include="InvDocAttachment\InvDocAttachmentDataModel.cs" />
+    <Compile Include="InvDocAttachment\InvDocAttachmentListModel.cs" />
+    <Compile Include="BriefPart\AjaxBriefPart.cs" />
+    <Compile Include="BriefPart\RenderedBriefPart.cs" />
+    <Compile Include="Car\CarListDTO.cs" />
+    <Compile Include="MatPurchase\MatPurchaseListModel.cs" />
+    <Compile Include="InvDocDetail\InvDocDetailDataModel.cs" />
+    <Compile Include="InvDoc\InternalBOLDocDataModel.cs" />
+    <Compile Include="InvDoc\ExternalBOLDocDataModel.cs" />
+    <Compile Include="InvDoc\ReturnDocDataModel.cs" />
+    <Compile Include="InvDoc\UseDocDataModel.cs" />
+    <Compile Include="InvDoc\InternalEntranceDocDataModel.cs" />
+    <Compile Include="InvDoc\EntranceDocDataModel.cs" />
+    <Compile Include="Mat\MatStockViewModel.cs" />
+    <Compile Include="Mat\MatListDTO.cs" />
+    <Compile Include="Mat\InvDocMatDataModel.cs" />
+    <Compile Include="Menu\MenuListModel.cs" />
+    <Compile Include="Menu\PublicMenuModel.cs" />
+    <Compile Include="ProjectDetail\ProjectDetailListDTO.cs" />
+    <Compile Include="Project\ProjectCEDTO.cs" />
+    <Compile Include="Project\ProjectListDTO.cs" />
+    <Compile Include="Provider\ProviderDataModel.cs" />
+    <Compile Include="Provider\ProviderListModel.cs" />
+    <Compile Include="Device\DeviceListModel.cs" />
+    <Compile Include="Device\DeviceViewModel.cs" />
+    <Compile Include="Home\UserInformation.cs" />
+    <Compile Include="JsTree\JsTreeNode.cs" />
+    <Compile Include="JsTree\JsTreeOperation.cs" />
+    <Compile Include="JsTree\JsTreeOperationData.cs" />
+    <Compile Include="MatGroupTechSpec\MatGroupTechSpecModel.cs" />
+    <Compile Include="MatInv\MatInvViewModel.cs" />
+    <Compile Include="Menu\MenuCheckBoxItem.cs" />
+    <Compile Include="Menu\MenuDataModel.cs" />
+    <Compile Include="Menu\MenuModel.cs" />
+    <Compile Include="Message\MessageModel.cs" />
+    <Compile Include="OrgChart\OrgChartModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceInRowReportModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceListReportModel.cs" />
+    <Compile Include="CarAttendance\CarGateInOutDataModel.cs" />
+    <Compile Include="CarAttendance\CarGateIODataModel.cs" />
+    <Compile Include="CarAttendance\CarGateIPIODataModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceDataModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceListDataModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceListModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceListViewModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceResponseModel.cs" />
+    <Compile Include="CarAttendance\CarAttendanceViewModel.cs" />
+    <Compile Include="Car\CarCEDTO.cs" />
+    <Compile Include="People\PeopleListDTO.cs" />
+    <Compile Include="People\PeopleCEDTO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PurchaseDocDetail\PurchaseDocDetailDataModel.cs" />
+    <Compile Include="PurchaseDoc\PurchaseDocCheckInvDocDataModel.cs" />
+    <Compile Include="PurchaseDoc\PurchaseDocFollowModel.cs" />
+    <Compile Include="PurchaseDoc\PurchaseDocListModel.cs" />
+    <Compile Include="PurchaseDoc\PurchaseDocDataModel.cs" />
+    <Compile Include="Report\InventoryListReportParam.cs" />
+    <Compile Include="Report\MatInventoryModel.cs" />
+    <Compile Include="Report\FollowPurchaseDocRepParam.cs" />
+    <Compile Include="Report\MatStockRepParam.cs" />
+    <Compile Include="Report\PlannedPMAgendaModel.cs" />
+    <Compile Include="Role\RoleListModel.cs" />
+    <Compile Include="Role\Criteria.cs" />
+    <Compile Include="Role\PermissionCategoryDataModel.cs" />
+    <Compile Include="Role\PermissionCheckBoxItem.cs" />
+    <Compile Include="Role\PermissionIdModel.cs" />
+    <Compile Include="Role\RoleModel.cs" />
+    <Compile Include="Role\RolePermissionModel.cs" />
+    <Compile Include="InvDoc\InvDocListModel.cs" />
+    <Compile Include="TimesheetWeekDay\WeekDayItem.cs" />
+    <Compile Include="InvYearCycle\InvYearCycleListModel.cs" />
+    <Compile Include="Township\TownshipCEDTO.cs" />
+    <Compile Include="Township\TownshipListDTO.cs" />
+    <Compile Include="Township\TownshipModel.cs" />
+    <Compile Include="UserShortcut\UserShortcutListModel.cs" />
+    <Compile Include="User\Criteria.cs" />
+    <Compile Include="User\CustomPrincipal.cs" />
+    <Compile Include="User\CustomPrincipalSerializeModel.cs" />
+    <Compile Include="User\ICustomPrincipal.cs" />
+    <Compile Include="User\ListCheckBoxItem.cs" />
+    <Compile Include="User\RoleCheckBoxItem.cs" />
+    <Compile Include="User\UpdateUserRoleModel.cs" />
+    <Compile Include="User\UserDataModel.cs" />
+    <Compile Include="User\UserInfoDataModel.cs" />
+    <Compile Include="User\UserInfoSimpleViewModel.cs" />
+    <Compile Include="User\UserInfoViewModel.cs" />
+    <Compile Include="User\UserListModel.cs" />
+    <Compile Include="User\UserMenuModel.cs" />
+    <Compile Include="User\UserModel.cs" />
+    <Compile Include="User\UserRoleModel.cs" />
+    <Compile Include="User\UserViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BSG.ADInventory.Common\BSG.ADInventory.Common.csproj">
+      <Project>{f8df49f6-1ec5-4a69-896f-a6b0cdbb4bd9}</Project>
+      <Name>BSG.ADInventory.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BSG.ADInventory.Entities\BSG.ADInventory.Entities.csproj">
+      <Project>{5339a015-c406-47ad-935b-50402cb91557}</Project>
+      <Name>BSG.ADInventory.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BSG.ADInventory.Resources\BSG.ADInventory.Resources.csproj">
+      <Project>{a6ae46de-2864-404b-875f-4973b9758a63}</Project>
+      <Name>BSG.ADInventory.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>

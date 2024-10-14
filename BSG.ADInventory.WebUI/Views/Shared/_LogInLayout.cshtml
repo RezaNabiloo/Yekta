@@ -1,0 +1,25 @@
+﻿@using System.Web.Optimization;
+@using BSG.ADInventory.Resources
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>
+        @string.Format("{0} | {1}", "Maham", "Login")
+
+    </title>
+    <link rel="icon" href="~/favicon.ico" sizes="128*128" />
+    @Styles.Render("~/Content/fonts")
+    @Styles.Render("~/Content/themLogin")
+    @Scripts.Render("~/bundles/modernizr")
+
+
+</head>
+<body>
+
+    @RenderBody()
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/them")
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>

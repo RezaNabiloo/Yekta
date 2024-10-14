@@ -1,0 +1,23 @@
+﻿@using System.Web.Optimization;
+@using BSG.ADInventory.Resources
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>
+        @string.Format("{0} | {1}", "زنگان پرشیا", this.ViewBag.Title)
+
+    </title>
+    @Styles.Render("~/Content/fonts")
+    @Styles.Render("~/Content/themLogin")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @*<link rel="icon" href="~/images/Public/Company-Images/logo.ico" sizes="128*128" />*@
+</head>
+<body>
+
+    @RenderBody()
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/them")
+</body>
+
+</html>

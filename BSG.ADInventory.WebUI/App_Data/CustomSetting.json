@@ -1,0 +1,93 @@
+﻿{
+  //Image size for Products
+  //"ProductImageSizes": {
+  //  "Original": {
+  //    "Width": 1000,
+  //    "Height": 667,
+  //    "Watermark": false,
+  //    "Prefix": ""
+  //  },
+  //  "Normal": {
+  //    "Width": 600,
+  //    "Height": 400,
+  //    "Watermark": false,
+  //    "Prefix": "Normal_"
+  //  },
+  //  "Thumbnail": {
+  //    "Width": 288,
+  //    "Height": 192,
+  //    "Watermark": false,
+  //    "Prefix": "Thumbnail_"
+  //  },
+  //  "Finger": {
+  //    "Width": 97,
+  //    "Height": 65,
+  //    "Watermark": false,
+  //    "Prefix": "Finger_"
+  //  }
+  //},
+
+
+  //Image size for Language Flag
+  "LanguageImageSize": {
+    "Width": 30,
+    "Height": 17,
+    "Watermark": false,
+    "Prefix": ""
+  },
+
+  //Image size for Mats
+  "MatImageSize": {
+    "Width": 500,
+    "Height": 500,
+    "Watermark": false,
+    "Prefix": ""
+  },
+  "PeopleImageSize": {
+    "Width": 200,
+    "Height": 200,
+    "Watermark": false,
+    "Prefix": ""
+  },
+  "SignatureImageSize": {
+    "Width": 200,
+    "Height": 200,
+    "Watermark": false,
+    "Prefix": ""
+  },
+  "CarImageSize": {
+    "Width": 500,
+    "Height": 500,
+    "Watermark": false,
+    "Prefix": ""
+  },
+  //Image size for Brands
+  "BrandImageSize": {
+    "Width": 220,
+    "Height": 162,
+    "Watermark": false,
+    "Prefix": ""
+  },
+
+  //Image size for ProductGroups
+  "ProductGroupImageSize": {
+    "Width": 120,
+    "Height": 67,
+    "Watermark": false,
+    "Prefix": ""
+  },
+
+  //Image size for Banners
+  "CarouselImageSize": {
+    "Width": 870,
+    "Height": 500,
+    "Watermark": false,
+    "Prefix": ""
+  },
+  "CarouselSideBannerImageSize": {
+    "Width": 420,
+    "Height": 240,
+    "Watermark": false,
+    "Prefix": ""
+  }
+}

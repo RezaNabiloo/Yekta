@@ -1,0 +1,197 @@
+﻿@using BSG.ADInventory.Resources
+@model IEnumerable<BSG.ADInventory.Entities.Menu>
+
+@{
+
+    ViewBag.EntityName = "Menu";
+}
+@{
+    var doJsTreeOperationUrl = Url.Action(actionName: "DoJsTreeOperation", controllerName: "Menu");
+    var getTreeJsonUrl = Url.Action(actionName: "GetTreeJson", controllerName: "Menu");
+}
+<link href="~/Content/plugins/jstree/dist/themes/default/style.css" rel="stylesheet" />
+<section class="content" style="padding-top:10px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-6" id="card-title"><h4 class="card-title float-right"><i class="fa-duotone fa-list-tree fa-lg"></i> @Resource.List @Resource.Menus</h4></div>
+                            <div class="col-md-6" id="card-buttons">
+                                <a class="btn btn-sm btn-light float-left mr-1" href="#" onclick="crudAction('@ViewBag.EntityName', '@ViewBag.EntityName' + '/CrudAction', 0, '@Resource.Create @Resource.Menu', 'modal-lg');"><i class="fal fa-plus fa-md text-green"></i> @Resource.Create</a>
+                                <a class="btn btn-sm btn-light float-left" href="#" onclick="refreshData()"><i class="fal fa-refresh fa-md"></i> @Resource.Refresh</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="overflow-x:hidden">
+                        <div class="overlay-wrapper hidden" id="overly-loading-@ViewBag.EntityName">
+                            <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                        </div>
+                        <div id="jstree-@ViewBag.EntityName">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<script src="~/Content/plugins/jstree/dist/jstree.js"></script>
+
+
+
+<script type="text/javascript">
+        var selectedNodeId;
+        var entity='@ViewBag.EntityName'
+        function postJsTreeOperation(operation, data, onDone, onFail) {
+
+
+            $.post('@doJsTreeOperationUrl',
+                {
+                    'operation': operation,
+                    'id': data.node.id,
+                    'parentId': data.node.parent,
+                    'position': data.position,
+                    'text': data.node.text,
+                    'originalId': data.original ? data.original.id : data.node.original.id,
+                    'href': data.node.a_attr.href,
+                    'viewOrder': data.node.a_attr.viewOrder
+
+                })
+                .done(function (result) {
+                    onDone(result);
+                })
+                .fail(function (result) {
+                    alert('failed.....');
+                    onFail(result);
+                });
+        }
+
+        $(function () {
+            var selectedData;
+
+            $('#jstree-@ViewBag.EntityName').jstree({
+                "plugins": ["contextmenu", "dnd", "types", "sort", "theme"],
+                "core": {
+                    "multiple": false,
+                    "check_callback": true,
+                    'data': {
+                        'url': '@getTreeJsonUrl',
+                        "type": "POST",
+                        "dataType": "json",
+                        "contentType": "application/json; charset=utf8",
+                        'data': function (node) {
+                            return { 'id': node.id };
+                        }
+                    },
+                    'themes': {
+                        'variant': 'large',
+                        'icons':false,
+                        'stripes': false
+                    },
+                    
+                },
+                'sort':
+                //    function (a, b) {
+                //    let a1 = this.get_node(a);
+                //    let b1 = this.get_node(b);
+                //    let isv_a1 = a1.a_attr['viewOrder'];
+                //    let isv_b1 = b1.a_attr['viewOrder'];
+
+                //    return (isv_a1 > isv_b1) ? 1 : -1;
+                //},
+                function(a, b) { return this.get_node(a).a_attr["viewOrder"] > this.get_node(b).a_attr["viewOrder"] ? 1 : -1; },
+                "contextmenu": {
+                    "items": function ($node) {
+                        var tree = $("#jstree-@ViewBag.EntityName").jstree(true);
+                        return {
+                            "Edit": {
+                                "separator_before": false,
+                                "separator_after": true,
+                                "label": "ویرایش",
+                                "action": function (obj) {
+                                    crudAction(entity, entity + '/CrudAction', $node.id, '@Resource.Edit @Resource.Menu', 'modal-lg');
+                                }
+                            },
+                            "Create": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "ایجاد زیر شاخه",
+                                "action": function (obj) {
+                                    $node = tree.create_node($node);
+                                   tree.edit($node);
+                                }
+                            },
+                            "Remove": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "حذف",
+                                "action": function (obj) {
+                                    tree.delete_node($node);
+                                }
+                        },
+                    };
+                    }
+                }
+            })
+                .bind("loaded.jstree", function (event, data) {
+                    $(this).jstree("close_all");
+                })
+                .on('delete_node.jstree', function (e, data) {
+                    postJsTreeOperation('DeleteNode', data,
+                        function (result) {
+                            if (result.message == 'ok') {
+                                data.instance.refresh();
+                            }
+                            else {
+                                toastr.error(result.message);
+                                data.instance.refresh();
+                                return;
+                            }
+                        },
+                        function (result) {
+
+
+                        });
+                })
+                .on('create_node.jstree', function (e, data) {
+                    postJsTreeOperation('CreateNode', data,
+                        function (result) {
+                            data.instance.set_id(data.node, result.id);
+                        },
+                        function (result) {
+                            data.instance.refresh();
+                        });
+                })                
+                .on('rename_node.jstree', function (e, data) {
+                    postJsTreeOperation('RenameNode', data,
+                        function (result) {
+                            // $("#txtTitle").val(data.node.text);
+                        },
+                        function (result) {
+                            data.instance.refresh();
+                        });
+
+                })                
+                .on('move_node.jstree', function (e, data) {
+                    postJsTreeOperation('MoveNode', data,
+                        function (result) {
+                        },
+                        function (result) {
+                            data.instance.refresh();
+                        });
+                });
+
+        });
+
+    function refreshData() { $('#jstree-@ViewBag.EntityName').jstree(true).refresh(); }
+    
+
+</script>
+

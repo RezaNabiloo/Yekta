@@ -1,0 +1,46 @@
+﻿@using BSG.ADInventory.Resources
+@{
+    ViewBag.Title = Resource.Error;
+}
+
+
+<div class="box">
+    <div class="box-header">
+    </div>
+    <div class="box-body">
+        <div class="container text-center">
+            @if (ViewBag.StatusCode == 404)
+            {
+                <img src="~/Images/Public/404-orange.svg" style="max-width:400px" />
+                <h4>صفحه مورد نظر یافت نشد.</h4>
+            }
+            else if (ViewBag.StatusCode == 500)
+            {
+                <img src="~/Images/Public/500-orange.svg" style="max-width:400px" />
+                <h4>خطا در پردازش درخواست.</h4>
+            }
+            else if (ViewBag.StatusCode == 400)
+            {
+                <img src="~/Images/Public/400-orange.svg" style="max-width:400px" />
+                <h4>درخواست ارسالی به سرور صحیح نمی‌باشد. لطفا مجددا تلاش نمائید.</h4>
+            }
+            else if (ViewBag.StatusCode == 403)
+            {
+                <img src="~/Images/Public/403-orange.svg" style="max-width:400px" />
+                <h4>شما مجوز ورود به این بخش را ندارید.</h4>
+            }
+            else
+            {
+                <img src="~/Images/Public/402-orange.svg" style="max-width:400px" />
+                <h4> خطا در پردازش درخواست.</h4>
+            }
+            <br />
+            <a href="@Url.Action("Index","Home")">@Resource.ReturnTo @Resource.HomePage</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+

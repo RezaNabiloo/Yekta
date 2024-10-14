@@ -1,0 +1,19 @@
+﻿@model string
+@{
+    var formName = ViewData.TemplateInfo.HtmlFieldPrefix;
+    var settings = Newtonsoft.Json.Linq.JObject.FromObject(ViewData["Config"] ?? new { });
+    settings.Add("customConfig", "/Content/plugins/ckeditor/config.js");
+    var config = new HtmlString(", " + settings.ToString());
+}
+<link href="~/Content/plugins/ckeditor/ckeditor-rtl.css" rel="stylesheet" />
+<textarea name="@formName" rows="20">@Model</textarea>
+
+@if (Context.Items["CkeditorScriptRendered"] == null)
+{
+    @*<script src="//cdn.ckeditor.com/4.5.9/standard/ckeditor.js"></script>*@
+    <script src="~/Content/plugins/ckeditor/ckeditor.js"></script>
+    Context.Items["CkeditorScriptRendered"] = true;
+}
+<script type="text/javascript">
+    CKEDITOR.replace("@formName" @config);
+</script>

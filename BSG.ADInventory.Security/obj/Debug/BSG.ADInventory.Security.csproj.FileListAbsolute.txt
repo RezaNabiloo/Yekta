@@ -1,0 +1,12 @@
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Security\bin\Debug\BSG.ADInventory.Security.dll
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Security\bin\Debug\BSG.ADInventory.Security.pdb
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Security\obj\Debug\BSG.ADInventory.Security.csproj.AssemblyReference.cache
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Security\obj\Debug\BSG.ADInventory.Security.csproj.CoreCompileInputs.cache
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Security\obj\Debug\BSG.ADInventory.Security.dll
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Security\obj\Debug\BSG.ADInventory.Security.pdb
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Security\bin\Debug\BSG.ADInventory.Security.dll
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Security\bin\Debug\BSG.ADInventory.Security.pdb
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Security\obj\Debug\BSG.ADInventory.Security.csproj.AssemblyReference.cache
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Security\obj\Debug\BSG.ADInventory.Security.csproj.CoreCompileInputs.cache
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Security\obj\Debug\BSG.ADInventory.Security.dll
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Security\obj\Debug\BSG.ADInventory.Security.pdb

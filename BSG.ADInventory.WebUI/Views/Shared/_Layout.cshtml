@@ -1,0 +1,158 @@
+﻿@using System.Configuration
+@using Zcf.Common.Extensions
+@using Zcf.Common.MVC.Helpers.DynamicMenu
+@using BSG.ADInventory.Resources
+@using Zcf.Globalization
+@using Zcf.Web.Mvc.Extensions
+@using System.Web.Optimization;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maham | @ViewBag.Title</title>
+    <link rel="icon" href="~/images/Public/Logo/BSsmallLogo.png" sizes="128*128" />
+
+    @Styles.Render("~/ContentMahamUI/fontAwesome/css")
+    @Styles.Render("~/ContentMahamUI/datatable/css")
+    @Styles.Render("~/ContentMahamUI/select2/css")
+    @Styles.Render("~/ContentMahamUI/sweetalert2/css")
+    @Styles.Render("~/ContentMahamUI/toastr/css")
+    @Styles.Render("~/ContentMahamUI/persian-datetimepicker/css")
+    @Styles.Render("~/ContentMahamUI/admin/css")
+    @Styles.Render("~/ContentMahamUI/theme/css")
+
+    @Scripts.Render("~/bundlesScriptMaham/modernizr")
+    @Scripts.Render("~/bundlesScriptMaham/jquery")
+    @Scripts.Render("~/bundlesScriptMaham/bootstrap")
+    @Scripts.Render("~/bundlesScriptMaham/jqueryval")
+    @Scripts.Render("~/bundlesScriptMaham/datatableInit")
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open layout-navbar-fixed layout-footer-fixed text-sm">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="~/Content/dist/img/BidarsoftLogo.png" alt="Bidarsoft" height="60" width="60">
+        </div>
+
+        @Html.Partial("_Header")
+        @Html.Partial("_Sidebar")
+        <!-- Content Wrapper. Contains page content -->
+        @RenderBody()
+        <div class="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
+
+            <div class="nav navbar navbar-expand navbar-white navbar-light border-bottom p-0">
+                <div class="nav-item dropdown">
+                    <a class="nav-link bg-danger" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa-duotone fa-window-frame fa-lg"></i></a>
+                    <div class="dropdown-menu mt-0">
+                        <a class="dropdown-item" href="#" onclick="showDesktop()"><i class="fal fa-desktop fa-lg text-gray"></i> @Resource.Desktop</a>
+                        <a class="dropdown-item" href="#" data-widget="iframe-close" data-type="all"><i class="fal fa-times fa-lg text-red"></i> @Resource.CloseAll</a>
+                        <a class="dropdown-item" href="#" data-widget="iframe-close" data-type="all-other"><i class="fal fa-times fa-lg text-gray"></i> @Resource.CloseOther</a>
+                    </div>
+                </div>
+                <a class="nav-link bg-light" href="#" data-widget="iframe-scrollright"><i class="fas fa-angle-double-right"></i></a>
+                <ul class="navbar-nav overflow-hidden" role="tablist"></ul>
+                <a class="nav-link bg-light" href="#" data-widget="iframe-scrollleft"><i class="fas fa-angle-double-left"></i></a>
+                @*<a class="nav-link bg-light" href="#" data-widget="iframe-fullscreen"><i class="fas fa-expand"></i></a>*@
+            </div>
+            <div class="tab-content">
+                <div class="tab-empty" id="tab-empty">
+
+
+                </div>
+                <div class="tab-loading">
+                    <div>
+                        <h5><i class="fad fa-spinner fa-spin"></i> @Resource.Loading</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.content-wrapper -->
+
+        @Html.Partial("_Footer")
+
+    </div>
+
+    @Scripts.Render("~/bundlesScriptMaham/jqueryval-unobtrusive")
+    @Scripts.Render("~/bundlesScriptMaham/select2")
+    @Scripts.Render("~/bundlesScriptMaham/datatable")
+    @Scripts.Render("~/bundlesScriptMaham/sweetalert2")
+    @Scripts.Render("~/bundlesScriptMaham/toastr")
+    @Scripts.Render("~/bundlesScriptMaham/persian-datetimepicker")
+    @Scripts.Render("~/bundlesScriptMaham/jquery-ui")
+
+    @Scripts.Render("~/bundlesScriptMaham/AdminPanel")
+
+
+    @*@RenderSection("scripts", required: false)*@
+
+    <div class="modal fade" id="modal-content">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex">
+                    <div class="flex-grow-1">
+                        <h6 class="modal-title" id="modal-content-title">Extra Large Modal</h6>
+                    </div>
+                    <div class="" id="modal-dialog-data-table-buttons"></div>
+                    <button type="button" class="close pb-0" data-dismiss="modal" aria-label="Close" id="modal-top-button">
+                        <span aria-hidden="true" class="text-red">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="overlay-wrapper hidden" id="overly-loading-modal">
+                        <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.PleaseWait</div></div>
+                    </div>
+                    <div id="modal-content-body">
+
+                    </div>
+                </div>
+                <div class="modal-footer hidden" id="modal-footer">
+                    <button type="button" class="btn btn-default btn-sm hidden" id="modalBtnSave"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                    <button type="button" class="btn btn-default btn-sm hidden" id="modalBtnOk"><span class="fal fa-check fa-md text-green"></span> @Resource.Ok </button>
+                    <button type="button" class="btn btn-default btn-sm hidden" data-dismiss="modal" id="modalBtnCancel"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+    <div class="modal fade m-auto" id="modal-overly-content" data-keyboard="false" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header d-flex">
+                    <div class="flex-grow-1">
+                        <h6 class="modal-title" id="modal-overly-content-title">Extra Large Modal</h6>
+                    </div>
+                    <div id="modal-overly-dialog-data-table-buttons">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="modal-overly-top-button">
+                            <span aria-hidden="true" class="text-red">&times;</span>
+                        </button>
+                    </div>
+
+                </div>
+                <div class="modal-body">
+                    <div class="overlay-wrapper hidden" id="overly-loading-modal-overly">
+                        <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.PleaseWait</div></div>
+                    </div>
+                    <div id="modal-overly-content-body">
+
+                    </div>
+                </div>
+                <div class="modal-footer hidden" id="modal-overly-footer">
+                    <button type="button" class="btn btn-default btn-sm hidden" id="modalBtnSave-overly"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                    <button type="button" class="btn btn-default btn-sm hidden" id="modalBtnOk-overly"><span class="fal fa-check fa-md text-green"></span> @Resource.Ok </button>
+                    <button type="button" class="btn btn-default btn-sm hidden" data-dismiss="modal" id="modalBtnCancel-overly"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundlesScriptMaham/main")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

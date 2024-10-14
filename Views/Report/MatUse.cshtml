@@ -1,0 +1,251 @@
+﻿@using BSG.ADInventory.Common.Enum
+@using BSG.ADInventory.Resources
+@{
+    var doJsTreeOperationUrl = Url.Action(actionName: "DoJsTreeOperation", controllerName: "MatGroup");
+    var getTreeJsonUrl = Url.Action(actionName: "GetTreeJson", controllerName: "MatGroup");
+}
+
+<link href="~/Content/plugins/jstree/dist/themes/default/style.css" rel="stylesheet" />
+
+@{
+    ViewBag.EntityName = "MatUse";
+}
+<section class="content" style="padding-top:10px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="overlay-wrapper hidden" id="overly-loading-@ViewBag.EntityName">
+                    <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                </div>
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-3" id="card-title"><h4 class="card-title float-right"><i class="fad fa-person-dolly-empty fa-lg"></i> @Resource.Report  @Resource.List @Resource.MatUse</h4></div>
+                            <div class="col-md-9 align-content-start" id="card-buttons-@ViewBag.EntityName">
+                                <div class="dt-buttons btn-group flex-wrap float-left dt-buttons-show">
+                                    <button class="btn btn-secondary btn-sm btn-light hidden" type="button" id="dtCopy-@ViewBag.EntityName">
+                                        <span><i class="fal fa-copy fa-lg"></i> کپی</span>
+                                    </button> 
+                                    <button class="btn btn-secondary btn-sm btn-light hidden" type="button" id="dtExcel-@ViewBag.EntityName">
+                                        <span><i class="fal fa-file-excel fa-md"></i> اکسل</span>
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm btn-light hidden" type="button" id="dtPDF-@ViewBag.EntityName">
+                                        <span><i class="fal fa-file-pdf fa-md"></i> فایل PDF</span>
+                                    </button> 
+                                    <button class="btn btn-secondary btn-sm btn-light" onclick="PrintRepList();">
+                                        <span><i class="fal fa-print fa-md"></i> @Resource.Print</span>
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm btn-light" onclick="ShowRepList();">
+                                        <span><i class="fal fa-command fa-md"></i> @Resource.RunReport</span>
+                                    </button>                                    
+                                    
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="overflow-x:hidden">
+                        <div class="row">
+                            <div class="col-lg-2 col-xl-2 col-md-3">
+                                <div class="editor-label-field col-md-12">
+                                    <div class="requiredlable">
+                                        @this.Html.Label(Resource.Project)
+                                    </div>
+                                    <div class="editor-field">
+                                        @Html.DropDownList("ProjectId", (SelectList)this.ViewBag.ProjectIds, Resource.Select, new { @class = "select2 form-control" })
+                                        @this.Html.ValidationMessage("ProjectId")
+                                    </div>
+                                </div>
+                                <div class="editor-label-field col-md-12">
+                                    <div class="requiredlable">
+                                        @this.Html.Label(Resource.Mat)
+                                    </div>
+                                    <div class="editor-field">
+                                        @Html.DropDownList("MatId", (SelectList)this.ViewBag.MatIds, Resource.Select, new { @class = "select2 form-control" })
+                                        @this.Html.ValidationMessage("MatId")
+                                    </div>
+                                </div>
+                                <div class="editor-label-field col-md-12">
+                                    <div class="requiredlable">
+                                        @Html.Label(Resource.MatGroup)
+                                    </div>
+                                    <div class="editor-label-field">
+
+
+                                        <div id="jstree-MatGroups-@ViewBag.EntityName" class="table-responsive" style="max-height:300px; overflow-y:scroll">
+                                        </div>
+                                        <div class="hidden">
+                                            @Html.DropDownList("MatGroupId", (SelectList)this.ViewBag.MatGroupIds, Resource.Select, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessage("MatGroupId", "", new { @class = "text-danger" })
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-10 col-xl-10 col-md-9 table-responsive" id="dataBox-@ViewBag.EntityName">
+                            </div>
+
+                        
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<script src="~/Content/plugins/jstree/dist/jstree.js"></script>
+
+<script type="text/javascript">
+
+    var entity = '@ViewBag.EntityName';
+    var selectedNodeId;
+
+
+    $(document).ready(function () {
+        $('.select2').select2()
+    });
+
+    function postJsTreeOperation(operation, data, onDone, onFail) {
+
+
+        $.post('@doJsTreeOperationUrl',
+            {
+                'operation': operation,
+                'id': data.node.id,
+                'parentId': data.node.parent,
+                'position': data.position,
+                'text': data.node.text,
+                'originalId': data.original ? data.original.id : data.node.original.id,
+                'href': data.node.a_attr.href
+
+            })
+            .done(function (result) {
+                onDone(result);
+            })
+            .fail(function (result) {
+                alert('failed.....');
+                onFail(result);
+            });
+    }
+
+    $(function () {
+        var selectedData;
+
+        $('#jstree-MatGroups-' + entity).jstree({
+            "core": {
+                "multiple": true,
+                "check_callback": true,
+                'data': {
+                    'url': '@getTreeJsonUrl',
+                    "type": "POST",
+                    "dataType": "json",
+                    "contentType": "application/json; charset=utf8",
+                    'data': function (node) {
+                        return { 'id': node.id };
+                    }
+                },
+                'themes': {
+                    'variant': 'large',
+                    'stripes': false,
+                    'draggable': false
+                }
+            },
+
+            "plugins": ["types", "sort", "checkbox"]
+        })
+            .bind("loaded.jstree", function (event, data) {
+                $(this).jstree("close_all");
+            })
+
+            .on('select_node.jstree', function (e, data) {
+                selectedNodeId = data.node.id;
+            });
+
+    });
+</script>
+<script>
+        function ShowRepList() {                      
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Report/ShowMatUse",
+                data: GenerateDataParam(),
+                beforeSend: function () {
+                    $("#overly-loading-" + entity).fadeIn();
+                },
+                success: function (result) {
+                    $('#dataBox-' + entity).html(result);
+                    $('#dtCopy-' + entity).fadeIn();
+                    $('#dtExcel-' + entity).fadeIn();
+                    $('#dtPDF-' + entity).fadeIn();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error('@Resource.ErrorCallAdmin');
+                },
+                complete(result) {
+                    $("#overly-loading-" + entity).fadeOut();
+                }
+            });
+        }       
+
+        function PrintRepList()
+        {            
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                url: '/Report/PrintMatUse',
+                data: GenerateDataParam(),
+                 beforeSend: function () {
+                     $("#overly-loading-" + entity).fadeIn();
+                     $('#dtCopy-' + entity).fadeOut();
+                     $('#dtExcel-' + entity).fadeOut();
+                     $('#dtPDF-' + entity).fadeOut();
+                 },
+                success: function (result) {
+                    $('#dataBox-' + entity).html(result);
+                     $('.stiJsViewerPage').css('direction', 'rtl');
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error('@Resource.ErrorCallAdmin' + '\n' + xhr.error);
+                },
+                complete(result) {
+                    $("#overly-loading-" + entity).fadeOut();
+                }
+             });
+
+
+    }
+
+        function GenerateDataParam() {
+        var checked_ids = [];
+            var selectedNodes = $('#jstree-MatGroups-'+entity).jstree("get_selected", true);
+            
+        $.each(selectedNodes, function () {
+            checked_ids.push(this.id);            
+        });
+
+        var mgIds = '';
+        for (var i = 0; i < checked_ids.length; i++) {
+            dmgIds = mgIds + checked_ids[i] + ',';
+        }
+
+        var Data = {
+            ProjectId: $("#ProjectId").val(),
+            MatId: $("#MatId").val(),            
+            MatGroupIds: mgIds
+        }
+        console.log(Data)
+        return Data;
+    }
+
+</script>
+

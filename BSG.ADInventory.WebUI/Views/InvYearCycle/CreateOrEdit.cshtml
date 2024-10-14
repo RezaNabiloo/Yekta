@@ -1,0 +1,67 @@
+﻿@model BSG.ADInventory.Entities.InvYearCycle
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "InvYearCycle";}
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-'+'@ViewBag.EntityName').dataTable().api().ajax.reload();
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+            @Html.HiddenFor(model => model.MatId)
+            @Html.HiddenFor(model => model.CalendarYearId)
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.Label(Resource.Year)
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.CalendarYearId, (SelectList)this.ViewBag.CalendarYearIds, new { @class = "form-control", disabled = "disabled" })
+                    @this.Html.ValidationMessageFor(model => model.CalendarYearId)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.MatId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.MatId, (SelectList)this.ViewBag.MaterialIds, new { @class = "form-control", disabled = "disabled" } )
+                    @this.Html.ValidationMessageFor(model => model.MatId)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.Label(Resource.Project, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.ProjectId, (SelectList)this.ViewBag.ProjectIds, new { @class = "form-control select2" } )
+                    @this.Html.ValidationMessageFor(model => model.ProjectId)
+                </div>
+            </div>
+
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.ConfirmedCountQty)
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.ConfirmedCountQty, new { htmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.ConfirmedCountQty)
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+}
+
+

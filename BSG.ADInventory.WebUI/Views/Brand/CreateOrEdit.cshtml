@@ -1,0 +1,65 @@
+﻿@model BSG.ADInventory.Models.Brand.BrandCEDTO
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "Brand";}
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-' + '@ViewBag.EntityName').dataTable().api().ajax.reload(null, false);
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+
+            <div class="editor-label-field col-md-12 text-center">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.ImageUrl)
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.ImageUrl, new { HtmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.ImageUrl)
+                </div>
+                <p class="text-primary text-center pt-2"><i class="fad fa-bell-on fa-shake fa-lg"></i> جهت نمایش بهتر تصویر ، آن را با اندازه <b> @ViewBag.PictureSize </b> پیکسل یا به تناسب آن ، بارگذاری نمائید.</p>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.FaTitle)
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.FaTitle, new { HtmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.FaTitle)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.EnTitle)
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.EnTitle, new { HtmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.EnTitle)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.Description)
+                </div>
+                <div class="editor-field">
+                    @this.Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = 5 })
+                    @this.Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+}
+

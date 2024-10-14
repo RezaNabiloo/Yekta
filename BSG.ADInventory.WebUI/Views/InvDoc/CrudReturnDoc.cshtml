@@ -1,0 +1,391 @@
+﻿@using BSG.ADInventory.Resources
+@model BSG.ADInventory.Models.InvDoc.ReturnDocDataModel
+@{ ViewBag.EntityName = "ReturnDoc";}
+<form id="partialForm">
+
+    <div class="row">
+        <div class="col-md-3">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.InvDocTypeId)
+            @Html.HiddenFor(model => model.InvDocStatus)
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.ProjectId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.ProjectId, (SelectList)this.ViewBag.ProjectIds, new { @class = "form-control" })
+                    @this.Html.ValidationMessageFor(model => model.ProjectId)
+                </div>
+            </div>
+
+
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.Label("تحویل دهنده", new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.PeopleId, (SelectList)this.ViewBag.PeopleIds, Resource.Select, new { @class = "form-control select2" })
+                    @this.Html.ValidationMessageFor(model => model.PeopleId)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-12">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.Description)
+                </div>
+                <div class="editor-field">
+                    @this.Html.TextAreaFor(model => model.Description, new { @class = "form-control textarea-100" })
+                    @this.Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="editor-label-field col-md-6">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.Material, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownList("MatId", (SelectList)this.ViewBag.MaterialIds, Resource.Select, new { @class = "form-control select2" })
+                        @this.Html.ValidationMessage("MatId")
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-4">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.UsePlace, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownList("ProjectDetailId", (SelectList)this.ViewBag.ProjectDetailIds, Resource.Select, new { @class = "form-control" })
+                        @this.Html.ValidationMessage("ProjectDetailId")
+                    </div>
+                </div>
+
+                <div class="editor-label-field col-md-2">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.Amount)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control", @type = "number", min = 0, @Value = "0" } })
+                        @this.Html.ValidationMessage("Amount")
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-12 align-content-end">                    
+                    <div class="editor-field">
+                        <a href="#" id="addItem" onclick="addItem()" class="btn btn-default btn-sm"><i class="fal fa-download fa-md text-green"></i> @Resource.Add @Resource.Mat</a>
+                        <a href="#" id="cancelItem" onclick="clearItem()" class="btn btn-default btn-sm"><i class="fal fa-times fa-md text-red"></i> @Resource.Cancel</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="detail-table" class="display table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayName(Resource.Row)</th>
+                                <th>@Html.DisplayName(Resource.MatCode)</th>
+                                <th>@Html.DisplayName(Resource.MatDescription)</th>
+                                <th>@Html.DisplayName(Resource.Amount)</th>
+                                <th>@Html.DisplayName(Resource.MatUnit)</th>
+                                <th>@Html.DisplayName(Resource.UsePlace)</th>
+                                <th>@Html.DisplayName(Resource.Proceedings)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr />
+        <button class="btn btn-default btn-sm" onclick="SaveInvDoc()"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    var MatList = [];
+    var Materials = []
+
+   function ItemValidation() {
+        var result = true;
+        var matId = $('#MatId').val();
+
+       if ($('#MatId').val() == null || $('#MatId').val() == '') {
+           $('#MatId').addClass('input-validation-error');
+           result = false;
+       }
+       else {
+           $('#MatId').removeClass('input-validation-error');
+
+           if ($('#Amount').val() == null || parseFloat($('#Amount').val()) <= 0) {
+               $('#Amount').addClass('input-validation-error');
+               result = false;
+           }
+           else {
+               $('#Amount').removeClass('input-validation-error');
+
+               //******* region check data duplicated in List
+               var exists = $.grep(MatList, function (e) { return e.MatId == matId; });
+               if (exists.length != 0) {
+
+                   $('#MatId').addClass('input-validation-error');
+                   toastr.error('@Resource.DuplicateData');
+                   result = false;
+               }
+               else { $('#MatId').removeClass('input-validation-error'); }
+
+               //******* check mat MatAllocationType public or special
+               var matAllocationType;
+               $.ajax({
+                   type: "Get",
+                   data: { id: matId },
+                   url: "/Mat/CheckMatAllocationType",
+                   async: false,
+                   success: function (response) {
+                       matAllocationType = response;
+                       if (matAllocationType == 2 && $('#ProjectDetailId').val() == '') {
+                           toastr.error('@Resource.PleaseSelectMatAllocationPlace')
+                           $('#ProjectDetailId').addClass('input-validation-error');
+                           result = false;
+                       }
+                       else {
+                           if (matAllocationType == 1 && $('#ProjectDetailId').val() > '0') {
+                               toastr.warning('@Resource.MatAllocationPlaceNotNecessary')
+                           }
+                           $('#ProjectDetailId').removeClass('input-validation-error');
+                       }
+
+                   },
+                   error: function (xhr, ajaxOptions, thrownError) {
+                       toastr.error('خطا در بررسی اطلاعات کالا : ' + xhr.responseText)
+                       matAllocationType = 0;
+                   }
+               });
+
+           }
+       }
+            return result;
+    }
+
+    function addItem() {
+
+        if (!ItemValidation())
+            return false;
+
+        let result = Materials.find(({ Id }) => Id == parseInt($('#MatId').val()));
+        if (result != null) {
+            var mat = {
+                Id: 0,
+                MatId: parseInt($('#MatId').val()),
+                Title: result.Title,
+                MatUnit: result.MatUnit,
+                ProjectDetailId: $('#ProjectDetailId').val(),
+                ProjectDetailTitle: $('#ProjectDetailId option:selected').val(),
+                Amount: parseFloat($('#Amount').val()),
+
+            };
+            MatList.push(mat);
+            clearItem();
+            loadInvDocDet();
+        }
+        };
+
+        // Show Docdet list as table
+    function loadInvDocDet() {
+        $('#detail-table tbody').html('');
+        $.each(MatList, function (i, item) {
+            var $tr = $('<tr>').append(
+                $('<td>').text(i + 1),
+                $('<td>').text(item.MatId),
+                $('<td>').text(item.Title),
+                $('<td>').text(item.Amount),
+                $('<td>').text(item.MatUnit),
+                $('<td>').text(item.ProjectDetailTitle),
+                $('<td class="text-center">' + '<i class="fal fa-edit fa-lg pl-3" onclick="editItem(' + item.Id + ',' + item.MatId + ')"></i><i class="fal fa-times fa-lg text-danger" onclick="removeItem(' + item.MatId + ')"></i>'),
+            ).appendTo('#detail-table');
+        });
+
+     };
+
+
+
+    function clearItem() {
+        $('#Amount').val(0);        
+        $('#ProjectDetailId').val('');
+        $('#MatId').val('').trigger('change');
+
+    }
+
+    function removeItem(id) {
+        if (confirm('@Resource.AreYouSureToDeleteItem')) {
+            MatList = MatList.filter(i => i.MatId !== id);
+            loadInvDocDet();
+        }
+    }
+
+    function GenerateData()
+    {
+        var data = {
+            Id: $('#Id').val(),
+            InvDocTypeId: $('#InvDocTypeId').val(),
+            PeopleId: $('#PeopleId').val(),
+            ProjectId: $('#ProjectId').val(),
+            Description: $('#Description').val(),
+            Mats: MatList
+        }
+
+        return data;
+    }
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        var _projectId = $('#ProjectId').val();
+        if (_projectId > 0) {
+
+            GetProjectDetails(_projectId);
+        }
+
+        $('.select2').select2();
+        Materials =@Html.Raw(Json.Encode(@ViewBag.Materials));
+         if ('@Model.Mats.Count()' > 0)
+        {
+            MatList=(@(new HtmlString(Json.Encode(Model.Mats))))
+             loadInvDocDet();
+        }
+    });
+
+
+    function GetProjectDetails(_projectId) {
+        var procemessage = "<option value=''> لطفا شکیبا باشید...</option>";
+        $("#ProjectDetailId").html(procemessage).show();
+        var url = "/ProjectDetail/GetProjectDetails/";
+        $.ajax({
+            url: url,
+            data: { id: _projectId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value=''>انتخاب کنید ....</option>";
+
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#ProjectDetailId").html(markup).show();
+                $("#ProjectDetailId").prop("disabled", false);
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(thrownError)
+                $("#ProjectDetailId").prop("disabled", true);
+            }
+        });
+
+    }
+    $('#ProjectId').change(function () {
+        GetProjectDetails($(this).val());
+    });
+
+
+    function SaveInvDoc() {
+        if (!$('#partialForm').valid())
+            return;
+
+        if (MatList.length == 0) {
+            toastr.error('هیچ کالایی در سند وجو ندارد');
+            return;
+        }    
+        $.ajax({
+            url: "/InvDoc/SetReturnDoc",
+            data: GenerateData(),
+                cache: false,
+                type: "POST",
+                beforeSend: function () {
+                    $("#overly-loading-desktop").removeClass("hidden");
+                },
+            success: function (response) {                    
+                if (response.Result == true) {                        
+                        toastr.success(response.ErrorMessage);
+                        $('#data-table-@ViewBag.EntityName').dataTable().api().ajax.reload();
+                        $('#modal-content').modal('toggle');
+                    }
+                    else {
+                        toastr.error(response.ErrorMessage);
+                    }
+
+                },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(xhr.responseText);
+                //return false;
+                },
+            complete: function responce() {
+                $("#overly-loading-desktop").addClass("hidden");
+            }
+                });
+
+
+    }
+
+    function editItem(id, matId) {
+
+        var objIndex = MatList.findIndex(i => i.Id == id && i.MatId == matId);
+
+        if (objIndex != null) {
+            $('#modal2-content-title').html('<i class="fad fa-check-circle fa-lg text-success"></i> ' + 'ویرایش مقادیر کالا : <b>' + MatList[objIndex].Title+'</b>');
+            $('#modal2-content-body').html(
+                '<div class="row">'+
+                '<div class="editor-label-field col-md-12">' +
+                '<div class= "requiredlable">' +
+                '<label for="InvDocAmount">مقدار</label>' +
+                '</div>' +
+                '<div class="editor-field">' +
+                '<input class="form-control text-box single-line" data-val="true"  id="InvDocAmount" name="InvDocAmount" type="number" value="' + MatList[objIndex].Amount + '">' +
+                '<span class="field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true"></span>' +
+                '</div>' +
+                '</div>'
+
+            );
+            $('#modal2-footer').removeClass('hidden');
+            $('#modalBtnOk2').removeClass('hidden');
+            $('#modalBtnCancel2').removeClass('hidden');
+            $('#modal2-content .modal-dialog').addClass('modal-sm');
+            $('.select2').select2();
+            $('#modal2-content').modal('toggle');
+
+            $('#modal2-content').on('shown.bs.modal', function (e) {
+                $('#modalBtnOk2').click(function () {
+                    if (confirm('@Resource.AreYouSureToEditItem')) {
+                        if ($('#InvDocAmount').val() <= 0 || $('#InvDocAmount').val() <= 0) {
+                            toastr.error('مقدار وارد شده صحیح نیست');
+                            return;
+                        }
+                        MatList[objIndex].Amount = $('#modal2-content #InvDocAmount').val();
+                        loadInvDocDet();
+                        $('#modal2-content').modal('toggle');
+                        $(this).off('click');
+                    }
+                });
+                $('#modalBtnCancel2').click(function () {
+                    $('#modalBtnOk2').off('click');
+                });
+
+                $(this).off('shown.bs.modal');
+
+            });
+
+        }
+    }
+
+</script>
+
+

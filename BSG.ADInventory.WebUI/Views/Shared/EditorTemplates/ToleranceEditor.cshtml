@@ -1,0 +1,9 @@
+﻿@model double?    
+<div class="input-group mb-3">    
+    @this.Html.TextBoxFor(model=>model, new { @class = "form-control", type = "number" } )
+    <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fas fa-plus-minus fa-md"></i></span>
+    </div>
+</div>
+
+

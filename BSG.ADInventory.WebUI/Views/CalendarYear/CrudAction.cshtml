@@ -1,0 +1,19 @@
+﻿@model BSG.ADInventory.Entities.CalendarYear
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "CalendarYear";}
+
+@using (Ajax.BeginForm("SetCrudAction", "CalendarYear", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "partialForm" }))
+{
+    <div id="partialForm">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.CreateTime)
+            @Html.HiddenFor(model => model.LastUpdateTime)
+            @Html.HiddenFor(model => model.CreateUserId)
+            @Html.HiddenFor(model => model.LastUpdateUserId)
+            @Html.Partial("CreateOrEdit", Model)
+        </div>
+    </div>
+
+}

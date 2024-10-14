@@ -1,0 +1,297 @@
+﻿@model BSG.ADInventory.Entities.Mat
+@using BSG.ADInventory.Resources
+@using BSG.ADInventory.Common.Enum
+@{ViewBag.EntityName = "Mat";}
+@{
+    var doJsTreeOperationUrl = Url.Action(actionName: "DoJsTreeOperation", controllerName: "MatGroup");
+    var getTreeJsonUrl = Url.Action(actionName: "GetTreeJson", controllerName: "MatGroup");
+}
+<link href="~/Content/plugins/jstree/dist/themes/default/style.css" rel="stylesheet" />
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-'+'@ViewBag.EntityName').dataTable().api().ajax.reload();
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="editor-label-field col-md-12">
+                    <div class="requiredlable">
+                        @this.Html.LabelFor(model => model.ImageUrl)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.EditorFor(model => model.ImageUrl)
+                        @this.Html.ValidationMessageFor(model => model.ImageUrl)
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-12">
+                    <div class="requiredlable">
+                        @Html.LabelFor(model => model.MatGroupId, new { @class = "required" })
+                    </div>
+                    <div class="editor-label-field">
+                        <div class="card card-default list-panel">
+                            <div class="card-title treeview-panel pr-1" data-toggle="collapse" data-parent="false" data-target="#pnlMatGroup">
+                                <span id="MatGroupTitle">
+                                    گروه کالا را انتخاب نمائید ...
+                                </span>
+                                <span class="las la-angle-down pull-left treeview-panel-icon"></span>
+
+                            </div>
+                            <div class="card-body " id="pnlMatGroup" style="max-height:200px; overflow-y:scroll; ">
+                                <br />
+                                <div id="jstree-MatGroups" class="pr-0">
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="hidden">
+                            @Html.DropDownListFor(model => model.MatGroupId, (SelectList)this.ViewBag.MatGroupIds, Resource.Select)
+                        </div>
+                        @Html.ValidationMessageFor(model => model.MatGroupId)
+                    </div>
+                </div>
+               
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.Code)
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.Code, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.Code)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.Title, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.Title, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.Title)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.MatUnitId, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownListFor(model => model.MatUnitId, (SelectList)this.ViewBag.MatUnitIds, Resource.Select, new { @class = "select2 form-control" })
+                            @this.Html.ValidationMessageFor(model => model.MatUnitId)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.BrandId)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownListFor(model => model.BrandId, (SelectList)this.ViewBag.BrandIds, Resource.Select, new { @class = "select2 form-control" })
+                            @this.Html.ValidationMessageFor(model => model.BrandId)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.Model)
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.Model, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.Model)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.Dimention)
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.Dimention, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.Dimention)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.TechnicalSpec)
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.TechnicalSpec, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.TechnicalSpec)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.OrderPoint, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.OrderPoint, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.OrderPoint)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.MinimumInventory, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.MinimumInventory, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.MinimumInventory)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.MatAllocationType, new { @class = "required" })
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownListFor(model => model.MatAllocationType, EnumHelper.GetSelectList(typeof(MatAllocationType)), new { @class = "form-control" })
+                            @this.Html.ValidationMessageFor(model => model.MatAllocationType)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.MatStorageMethod)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownListFor(model => model.MatStorageMethod, EnumHelper.GetSelectList(typeof(MatStorageMethod)), Resource.Select, new { @class = "form-control" })
+                            @this.Html.ValidationMessageFor(model => model.MatStorageMethod)
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.HasExpirationDate)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownListFor(model => model.HasExpirationDate, new List<SelectListItem>()
+                            {
+                               new SelectListItem() { Text = Resource.Yes, Value = "True" },
+                               new SelectListItem() { Text = Resource.No, Value = "False"}
+                            }, new { @id = "HasExpirationDate", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-3">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.IsActive)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownListFor(model => model.IsActive, new List<SelectListItem>()
+                            {
+                               new SelectListItem() { Text = Resource.Active, Value = "True" },
+                               new SelectListItem() { Text = Resource.InActive, Value = "False"}
+                            }, new { @id = "IsActive", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="editor-label-field col-md-9">
+                        <div class="requiredlable">
+                            @this.Html.LabelFor(model => model.Description)
+                        </div>
+                        <div class="editor-field">
+                            @this.Html.EditorFor(model => model.Description, new { HtmlAttributes = new { @class = "form-control" } })
+                            @this.Html.ValidationMessageFor(model => model.Description)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script src="~/Content/plugins/jstree/dist/jstree.js"></script>
+<script type="text/javascript">
+
+    var selectedNodeId;
+    function postJsTreeOperation(operation, data, onDone, onFail) {
+
+ 
+
+
+            $.post('@doJsTreeOperationUrl',
+                {
+                    'operation': operation,
+                    'id': data.node.id,
+                    'parentId': data.node.parent,
+                    'position': data.position,
+                    'text': data.node.text,
+                    'originalId': data.original ? data.original.id : data.node.original.id,
+                    'href': data.node.a_attr.href
+
+                })
+                .done(function (result) {
+                    onDone(result);
+                })
+                .fail(function (result) {
+                    alert('failed.....');
+                    onFail(result);
+                });
+      
+        }
+
+  
+        $(function () {
+            var selectedData;
+
+            $('#jstree-MatGroups').jstree({
+                "core": {
+                    "multiple": false,
+                    "check_callback": true,
+                    'data': {
+                        'url': '@getTreeJsonUrl',
+                        "type": "POST",
+                        "dataType": "json",
+                        "contentType": "application/json; charset=utf8",
+                        'data': function (node) {
+                            return { 'id': node.id };
+                        }
+                    },
+                    'themes': {
+                        'variant': 'large',
+                        'stripes': false,
+                        'draggable': false
+                    }
+                },
+
+                "plugins": ["types", "sort"]
+            })
+                .bind("loaded.jstree", function (event, data) {
+
+                    if (@ViewBag.MatGroupId== '0') {
+                        $(this).jstree("close_all");
+                        $('#MatGroupTitle').html('گروه کالا را انتخاب نمائید ...')
+                    }
+                    else {
+                        $('li[id="@ViewBag.MatGroupId"] > a.jstree-anchor').addClass('jstree-clicked');
+                        $('#MatGroupTitle').html($('li[id="@ViewBag.MatGroupId"] > a.jstree-anchor').text());
+                    }
+                })
+                .on('deselect_node.jstree', function (e, data) {
+                    toastr.error('@Resource.SelectMatGroup')
+                })
+
+                .on('select_node.jstree', function (e, data) {
+                    if (data.node.children != '') {
+                        //alert('مجاز به انتخاب این آیتم نمی باشید. لطفا از آیتم های زیر مجموعه انتخاب نمائید.');
+                        toastr.error('@Resource.CanNotSelectPlsSelectChildItem')
+                        data.instance.deselect_node(data.node);
+                        return;
+                    }
+                    $('#MatGroupTitle').html(data.node.text)
+                    $("#MatGroupId option[value='" + data.node.id + "']").attr("selected", "selected");
+                    selectedData = data;
+                });
+
+
+        });
+
+
+
+</script>

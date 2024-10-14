@@ -1,0 +1,97 @@
+﻿@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "FollowUpPurchaseDoc";}
+@model BSG.ADInventory.Entities.PurchaseDoc
+@{ var row = 0;}
+
+<div class="row">
+            
+            <div class="col-md-4">
+                <p class="pb-0">@this.Html.LabelFor(model => model.ProjectId): @Html.DisplayFor(model => model.Project.Title)</p>
+            </div>
+            <div class="col-md-4">
+                <p class="pb-0">@this.Html.LabelFor(model => model.ProviderId): @ViewBag.ProviderName</p>
+            </div>
+            
+            <div class="col-md-4">
+                <p class="pb-0">
+                    @this.Html.Label("نوع دستور خرید"):
+                    @switch (Model.IsAggregated)
+                    {
+                        case true:
+                            @Resource.Aggregated
+                            break;
+
+                        default:
+                            @Resource.NotAggregated
+                            break;
+                    }
+                </p>
+            </div>
+    
+    
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <fieldset class="form-group border pr-2 pl-2">
+            <legend class="w-auto px-2"><i class="fad fa-shopping-bag text-blue"></i> اقلام دستور خرید</legend>
+            <table class="table">
+                <thead>
+                    <tr class="fit">
+                        <th>@Resource.Row</th>
+                        <th>@Resource.MatCode</th>
+                        <th>@Html.DisplayName(Resource.MatDescription)</th>
+                        <th>@Html.DisplayName("مقدار خرید")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.PurchaseDocItems)
+                    {
+                        <tr>
+                            @{row++;}
+                            <td>@row</td>
+                            <td>@item.MatId</td>
+                            <td>@item.MatTitle</td>
+                            <td>@item.Amount  <small>@item.MatUnit</small></td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </fieldset>
+    </div>
+    <div class="col-md-6">
+        <fieldset class="form-group border pr-2 pl-2">
+            <legend class="w-auto px-2"><i class="fad fa-truck-container text-success"></i> اقلام دریافت شده</legend>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>@Resource.Row</th>
+                        <th>@Resource.MatCode</th>
+                        <th>@Html.DisplayName(Resource.MatDescription)</th>
+                        <th>@Html.DisplayName(Resource.RecivedAmount)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ row = 0;}
+                    @foreach (var item in ViewBag.PurchaseDocRecivedItems)
+                    {
+                        <tr class="fit">
+                            @{row++;}
+                            <td>@row</td>
+                            <td>@item.MatId</td>
+                            <td>@item.MatTitle</td>
+                            <td>@item.Amount  <small>@item.MatUnit</small></td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </fieldset>
+    </div>
+
+</div>
+
+
+

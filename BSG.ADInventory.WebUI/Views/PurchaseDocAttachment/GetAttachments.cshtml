@@ -1,0 +1,26 @@
+﻿@model IEnumerable<BSG.ADInventory.Models.PurchaseDocAttachment.PurchaseDocAttachmentDataModel>
+@using BSG.ADInventory.Resources
+@{ var row = 0;}
+<table class="display table-hover table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th class="table-col-sm pr-3">@Html.DisplayName(Resource.Row)</th>
+            <th>@Html.DisplayName(Resource.Title)</th>
+            <th class="table-col-sm">@Resource.Download</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            row++;
+        <tr>
+            <td class="pr-3">@row </td>
+            <td>@item.Title</td>            
+            <td><a href="@Url.Action("DownloadAttachment", "PurchaseDocAttachment", new { filePath = item.FilePath })"><i class="fa-duotone fa-download fa-lg text-blue"></i></a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+
+

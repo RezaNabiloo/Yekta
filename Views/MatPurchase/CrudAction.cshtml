@@ -1,0 +1,22 @@
+﻿@model BSG.ADInventory.Entities.MatPurchase
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "MatPurchase";}
+
+@using (Ajax.BeginForm("SetCrudAction", "MatPurchase", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "partialForm" }))
+{
+    <div id="partialForm">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.InvDocId, new { @Value = Model.InvDocId })
+            @Html.HiddenFor(model => model.MatId, new { @Value = Model.MatId })
+            @Html.HiddenFor(model => model.Qty, new { @Value = Model.Qty})
+            @Html.HiddenFor(model => model.CreateTime)
+            @Html.HiddenFor(model => model.LastUpdateTime)
+            @Html.HiddenFor(model => model.CreateUserId)
+            @Html.HiddenFor(model => model.LastUpdateUserId)
+            @Html.Partial("CreateOrEdit", Model)
+        </div>
+    </div>
+
+}

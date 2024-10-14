@@ -1,0 +1,39 @@
+@using Alert
+@using BSG.ADInventory.Resources
+@model BSG.ADInventory.Models.Message.MessageModel
+@{
+    this.ViewBag.Title = this.Model.Title;
+    Layout = null;//"~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .message
+    {
+        direction: rtl;
+        font-family:'tahoma';
+        font-size:14px;
+        text-align:center;
+        border:1px solid #cdcdcd;
+        background-color:#f5efd0;
+        color:#107ce4;
+        width:500px;
+        margin:auto;
+    }
+    .command
+    {
+
+    }
+</style>
+
+<div class="message">
+    @this.Html.Raw(this.Model.Description)
+    @if (this.Model.HasReturnCommand)
+    {
+        <div class="command">
+            <a id="return-to-last-page" href="javascript:history.go(-1);" class="new-Item" style="margin: 0 4px; text-decoration: none;">
+                @Resource.Return
+                <img src="~/Content/images/arrow_undo.png" />
+            </a>
+        </div>
+    }
+</div>

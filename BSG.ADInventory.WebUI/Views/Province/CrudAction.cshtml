@@ -1,0 +1,16 @@
+﻿@model BSG.ADInventory.Models.Province.ProvinceCEDTO
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "Province";}
+@using (Ajax.BeginForm("SetCrudAction", "Province", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = ViewBag.EntityName }))
+{
+    <div id= "@ViewBag.EntityName">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)            
+            @Html.Partial("CreateOrEdit", Model)
+        </div>
+    </div>
+
+}
+
+

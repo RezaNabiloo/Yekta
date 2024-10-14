@@ -1,0 +1,31 @@
+﻿@model BSG.ADInventory.Models.Account.DeleteUserViewModel
+@using BSG.ADInventory.Resources
+@{
+    ViewBag.Title = Resource.Delete + " " + Resource.User;
+}
+<h2>@Resource.Delete @Resource.User</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>@Resource.User</legend>
+
+        <div class="editor-label-field">
+            <div class="requiredlable">
+                @this.Html.LabelFor(model => model.Mobile)
+            </div>
+            <div class="editor-field">
+                @this.Html.EditorFor(model => model.Mobile)
+                @this.Html.ValidationMessageFor(model => model.Mobile)
+            </div>
+        </div>
+
+        <p>
+            <input id="submitter" class="crud-btn finalizer-btn" type="submit" name="name" value="@Resource.Delete" />
+            <input id="action-rejector" class="crud-btn cancel-btn" type="button" name="name" value="@Resource.Cancel" />
+        </p>
+
+    </fieldset>
+}
+

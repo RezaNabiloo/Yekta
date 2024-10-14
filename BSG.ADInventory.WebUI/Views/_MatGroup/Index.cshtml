@@ -1,0 +1,201 @@
+﻿@using BSG.ADInventory.Resources
+@model IEnumerable<BSG.ADInventory.Entities.MatGroup>
+
+@{ViewBag.EntityName = "MatGroup"; }
+
+@{
+    var doJsTreeOperationUrl = Url.Action(actionName: "DoJsTreeOperation", controllerName: "MatGroup");
+    var getTreeJsonUrl = Url.Action(actionName: "GetTreeJson", controllerName: "MatGroup");
+}
+<link href="~/Content/plugins/jstree/dist/themes/default/style.css" rel="stylesheet" />
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">                
+                <div class="card card-default">                    
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-6 col-sm-12" id="card-title"><h4 class="card-title w-100 text-lg-left text-xl-left text-md-left text-sm-center"><i class="fad fa-pallet-box fa-lg"></i> @Resource.List  @Resource.MatGroup</h4></div>
+                            <div class="col-md-6 col-sm-12" id="card-buttons-@ViewBag.EntityName">
+                                <a class="btn btn-sm btn-light float-left mr-1" href="#" onclick="crudAction('@ViewBag.EntityName', '@ViewBag.EntityName' + '/CrudAction', 0, '@Resource.Create @Resource.MatGroup', '');" data-toggle="tooltip" data-placement="bottom" title="@Resource.Create"><i class="fas fa-plus fa-md text-success"></i></a>
+                                <a class="btn btn-sm btn-light float-left" href="#" onclick="refreshData()" data-toggle="tooltip" data-placement="bottom" title="@Resource.Refresh"><i class="fal fa-refresh fa-md"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="overflow-x:hidden">
+                        <div class="overlay-wrapper hidden" id="overly-loading-@ViewBag.EntityName">
+                            <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                        </div>
+                        <div id="jstree-@ViewBag.EntityName">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+    <script src="~/Content/plugins/jstree/dist/jstree.js"></script>
+
+
+
+    <script type="text/javascript">
+        var selectedNodeId;
+        var entity = '@ViewBag.EntityName'
+        $('body .dropdown-toggle').dropdown();
+        function postJsTreeOperation(operation, data, onDone, onFail) {
+
+
+            $.post('@doJsTreeOperationUrl',
+                {
+                    'operation': operation,
+                    'id': data.node.id,
+                    'parentId': data.node.parent,
+                    'position': data.position,
+                    'text': data.node.text,
+                    'originalId': data.original ? data.original.id : data.node.original.id,
+                    'href': data.node.a_attr.href
+
+                })
+                .done(function (result) {
+                    onDone(result);
+                })
+                .fail(function (result) {
+                    alert('failed.....');
+                    onFail(result);
+                });
+        }
+
+        $(function () {
+            var selectedData;
+
+            $('#jstree-@ViewBag.EntityName').jstree({
+                "core": {
+                    "multiple": false,
+                    "check_callback": true,
+                    'data': {
+                        'url': '@getTreeJsonUrl',
+                        "type": "POST",
+                        "dataType": "json",
+                        "contentType": "application/json; charset=utf8",
+                        'data': function (node) {
+                            return { 'id': node.id };
+                        }
+                    },
+                    'themes': {
+                        'variant': 'large',
+                        'stripes': false
+                    }
+                },
+
+                "plugins": ["contextmenu", "dnd", "types", "sort"],
+                "contextmenu": {
+                    "items": function ($node) {
+                        var tree = $("#jstree-@ViewBag.EntityName").jstree(true);
+                        return {
+                            "Edit": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "ویرایش",
+                                "action": function (obj) {
+                                    crudAction(entity, entity + '/CrudAction', $node.id, '@Resource.Edit @Resource.MatGroup', '');
+                                }
+                            },
+                            "Create": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "ایجاد زیر شاخه",
+                                "action": function (obj) {
+                                    $node = tree.create_node($node);
+                                   tree.edit($node);
+                                }
+                            },
+
+                            //"PMStaticJob": {
+                            //    "separator_before": false,
+                            //    "separator_after": true,
+                            //    "label": "شرح عملیات پیشگیرانه",
+                            //    "action": function (obj) {
+                            //        setPMStaticJobs($node);
+                            //    }
+                            //},
+                            "Remove": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "حذف",
+                                "action": function (obj) {
+                                    tree.delete_node($node);
+                                }
+                        },
+
+
+                        };
+                    }
+
+                }
+            })
+                .bind("loaded.jstree", function (event, data) {
+                    $(this).jstree("open_all");
+                })
+                .on('delete_node.jstree', function (e, data) {
+                    postJsTreeOperation('DeleteNode', data,
+                        function (result) {
+                            if (result.message == 'ok') {
+                                data.instance.refresh();
+                            }
+                            else {
+                                toastr.error(result.message);
+                                data.instance.refresh();
+                                return;
+                            }
+                        },
+                        function (result) {
+
+
+                        });
+                })
+                .on('create_node.jstree', function (e, data) {
+                    postJsTreeOperation('CreateNode', data,
+                        function (result) {
+                            data.instance.set_id(data.node, result.id);
+                        },
+                        function (result) {
+                            data.instance.refresh();
+                        });
+                })
+                //===============================
+                .on('rename_node.jstree', function (e, data) {
+                    postJsTreeOperation('RenameNode', data,
+                        function (result) {
+                            // $("#txtTitle").val(data.node.text);
+                        },
+                        function (result) {
+                            data.instance.refresh();
+                        });
+
+                })
+                //===============================
+                .on('move_node.jstree', function (e, data) {
+                    postJsTreeOperation('MoveNoViewBage', data,
+                        function (result) {
+                        },
+                        function (result) {
+                            data.instance.refresh();
+                        });
+                });
+
+        });
+
+        function setPMStaticJobs(obj) {           
+            createChildTab('@Resource.PMStaticJobs' + ' - ' + obj.text, '/PMStaticJob/Index/' + obj.id, 'pmStaticJob-' + obj.id, 'true', 'false');           
+        };
+        function refreshData() {
+            $('#jstree-@ViewBag.EntityName').jstree(true).refresh();
+        }
+    </script>
+

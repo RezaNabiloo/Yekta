@@ -1,0 +1,55 @@
+﻿@model BSG.ADInventory.Entities.Project
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "Project";}
+
+@using (Ajax.BeginForm("SetCrudAction", "Project", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "partialForm" }))
+{
+    <div id="partialForm">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.CreateTime)
+            @Html.HiddenFor(model => model.LastUpdateTime)
+            @Html.HiddenFor(model => model.CreateUserId)
+            @Html.HiddenFor(model => model.LastUpdateUserId)
+            @Html.Partial("CreateOrEdit", Model)
+        </div>
+    </div>
+
+}
+<script>
+         $(document).ready(function () {
+                var _provinceId = $('#ProvinceId option:selected').val();
+                if (_provinceId > 0) {
+                    GetTownships(_provinceId);
+                    $('#TownshipId').val('@Model.TownshipId');
+                }
+            });
+        function GetTownships(_provinceId) {
+            var procemessage = "<option value='0'> لطفا شکیبا باشید...</option>";
+            $("#TownshipId").html(procemessage).show();
+            var url = "/Province/GetTownships/";
+            $.ajax({
+                url: url,
+                data: { id: _provinceId },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var markup = "<option value='0'>انتخاب کنید ....</option>";
+
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+                    $("#TownshipId").html(markup).show();
+                    $("#TownshipId").prop("disabled", false);
+
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                    $("#TownshipId").prop("disabled", true);
+                }
+            });
+
+        }
+
+</script>

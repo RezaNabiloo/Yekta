@@ -1,0 +1,42 @@
+﻿@model BSG.ADInventory.Models.PurchaseDocAttachment.PurchaseDocAttachmentDataModel
+@using BSG.ADInventory.Resources
+
+
+@using(Ajax.BeginForm("SetPurchaseDocAttachmentFile", "PurchaseDocAttachment", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "partialForm" }, new { @id = "form_UploadFile", @enctype = "multipart/form-data" }))
+{
+    <div id="partialForm">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    
+            @Html.Partial("UploadFileData", Model)
+          </div>
+    </div>
+  
+}
+<script>
+    window.addEventListener("submit", function (e) {
+        var form = e.target;
+        if (form.getAttribute("enctype") === "multipart/form-data") {
+            if (form.dataset.ajax) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var xhr = new XMLHttpRequest();
+                xhr.open(form.method, form.action);
+                xhr.onreadystatechange = function () {
+
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        if (xhr.statusText == 'NotOk') {
+                            toastr.error('هیچ فایلی انتخاب نشده');
+                        }
+                        else {
+                            $('#data-table-PurchaseDoc').dataTable().api().ajax.reload();
+                            $('#modal-content').modal('toggle');
+                            toastr.success('اطلاعات با موفقیت ذخیره شد');                        }
+                            }
+                };
+                xhr.send(new FormData(form));
+            }
+        }
+    }, true);
+</script>
+

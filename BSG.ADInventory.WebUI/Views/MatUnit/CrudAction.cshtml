@@ -1,0 +1,15 @@
+﻿@model BSG.ADInventory.Models.MatUnit.MatUnitCEDTO
+@{ViewBag.EntityName = "MatUnit";}
+
+@using (Ajax.BeginForm("SetCrudAction", "MatUnit", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = ViewBag.EntityName }))
+
+{
+    <div id="@ViewBag.EntityName">    
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+            @Html.Partial("CreateOrEdit", Model)
+        </div>
+    </div>
+
+}

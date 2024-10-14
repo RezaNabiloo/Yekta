@@ -1,0 +1,329 @@
+﻿@model BSG.ADInventory.Models.PurchaseDoc.PurchaseDocDataModel
+@using BSG.ADInventory.Resources
+@{ ViewBag.EntityName = "PurchaseDoc";}
+<script src="~/Content/plugins/jquery-validation/jquery.validate.unobtrusive.min.js"></script>
+<div id="partialForm">
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        <div class="form-group">
+            <div class="row">
+                <div class="editor-label-field col-md-3">
+                    <div class="requiredlable">
+                        @this.Html.LabelFor(model => model.ProviderId, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownListFor(model => model.ProviderId, (SelectList)this.ViewBag.ProviderIds, Resource.Select, new { @class = "select2 form-control" })
+                        @this.Html.ValidationMessageFor(model => model.ProviderId)
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-3">
+                    <div class="requiredlable">
+                        @this.Html.LabelFor(model => model.IsAggregated, new { @class = "required" })
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownListFor(model => model.IsAggregated, new List<SelectListItem>()
+                   {
+                      new SelectListItem() { Text = Resource.Yes, Value = "True" },
+                      new SelectListItem() { Text = Resource.No, Value = "False"}
+                   }, new { @id = "IsAggregated", @class = "form-control" })@*, @onchange = "javascript:setUiElement(this.value);" })*@
+                @this.Html.ValidationMessageFor(model => model.ProviderId)
+            </div>
+            </div>
+            <div class="editor-label-field col-md-3" id="ProjectBox">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.ProjectId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.ProjectId, (SelectList)this.ViewBag.ProjectIds, Resource.Select, new { @class = "select2 form-control" })
+                    @this.Html.ValidationMessageFor(model => model.ProjectId)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-3">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.AgentUserId, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.AgentUserId, (SelectList)this.ViewBag.AgentUserIds, Resource.Select, new { @class = "select2 form-control" })
+                    @this.Html.ValidationMessageFor(model => model.AgentUserId)
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-5">
+                        <fieldset class="form-group border pr-2 pl-2">
+                            <legend class="w-auto px-2"><i class="fa-duotone fa-bag-shopping text-success"></i> @Resource.PurchaseOrder</legend>
+
+                            <table class="mb-2 table table-hover" id="tblPurchaseDocItems">
+                                <thead class="success">
+                                    <tr>
+                                        <td>@Resource.Row</td>
+                                        <td>@Resource.RequestCode</td>
+                                        <td>@Resource.MatCode</td>
+                                        <td>@Resource.MatDescription</td>
+                                        <td>@Resource.Amount</td>
+                                        <td>@Resource.Unit</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                    </div>
+                    <div class="col-md-7">
+                        <fieldset class="form-group border pr-2 pl-2">
+                            <legend class="w-auto px-2"><i class="fa-duotone fa-starfighter-twin-ion-engine-advanced text-gt-blue"></i> @Resource.Orders</legend>
+                            <table class="mb-2 table table-hover" id="tblOrders">
+                                <thead>
+                                    <tr>
+                                        <td>@Resource.Row</td>
+                                        <td>@Resource.MatCode</td>
+                                        <td>@Resource.MatDescription</td>
+                                        <td>@Resource.RequiredAmount</td>
+                                        <td>@Resource.Unit</td>
+                                        <td>@Resource.Project</td>
+                                        <td>@Resource.RequiredDate</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr />
+                    <button class="btn btn-default btn-sm" onclick="SaveRequestToOrder()"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-Confirm" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h6 class="modal-title"><i class="fas fa-check text-success"></i> @Resource.Confirm</h6>                                
+            </div>
+            <div class="modal-body">
+                <div class="editor-label-field col-md-12">
+                    <div class="requiredlable">
+                        @this.Html.Label(Resource.Amount)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.Editor("ConfirmAmount", new { HtmlAttributes = new { @class = "form-control" } })                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" id="confirm"><span class="fal fa-right fa-md text-success"></span> @Resource.Confirm</button>
+                <button type="button" class="btn btn-default btn-sm" id="closeConfirm"><span class="fal fa-times fa-md text-danger"></span> @Resource.Cancel</button>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<style>
+    #modal-Confirm {     
+        position: absolute;                
+        top: 50%;        
+    }
+</style>
+
+
+<script>
+
+    var openOrders=[];
+    var purchaseDocItems = [];
+    var MatList = [];
+    function setUiElement(val) {
+        if (val == 'True') {
+            $('#ProjectBox').addClass('hidden')
+        }
+        else {
+            $('#ProjectBox').removeClass('hidden')
+        }
+    }
+    $(document).ready(function () {
+        $('.select2').select2();
+        openOrders = @Html.Raw(Json.Encode(@ViewBag.OpenOrders));
+
+        //console.log(openOrders);
+        generateOrderTable(openOrders);
+
+        $('#closeConfirm').click(function () {
+            $('#modal-Confirm').addClass('hidden');
+        });
+
+    });
+
+    function generateOrderTable() {
+        $('#tblOrders tbody').html('');
+        $.each(openOrders, function (i, item) {            
+            var $tr = $('<tr role="button" ondblclick="addPurchaseDoc(' + item.Id +')">').append(
+                $('<td>').text(i+1),
+                $('<td>').text(item.MatId),
+                $('<td>').text(item.MatTitle),
+                $('<td>').text(item.Amount),
+                $('<td>').text(item.MatUnit),
+                $('<td>').text(item.Project),
+                $('<td>').text(new Date(parseInt(item.RequiredDate.substr(6))).toLocaleDateString('fa-IR'))
+            ).appendTo('#tblOrders');
+        });
+    }
+    function generatePurchaseDocTable() {
+        $('#tblPurchaseDocItems tbody').html('');
+        $.each(purchaseDocItems, function (i, item) {
+            var $tr = $('<tr class="table-success" role="button" ondblclick="removePurchaseDoc(' + item.Id +')">').append(
+                $('<td>').text(i + 1),
+                $('<td>').text(item.MatOrderId),
+                $('<td>').text(item.MatId),
+                $('<td>').text(item.MatTitle),
+                $('<td>').text(item.Amount),
+                $('<td>').text(item.MatUnit)
+            ).appendTo('#tblPurchaseDocItems');
+        });
+    }
+
+
+    function addPurchaseDoc(id) {
+        
+        
+        let result = openOrders.find(({ Id }) => Id == id);
+        console.log(result);
+        if (result != null) {
+            $('#modal2-content-title').html('<i class="fad fa-check-circle fa-lg text-success"></i> ' + 'تعیین مقدار سفارش');
+            $('#modal2-content-body').html('<div class="editor-label-field col-md-12">' +
+                '<div class= "requiredlable">' +
+                '<label for="ConfirmAmount">مقدار مورد تائید ' + result['MatTitle'] + ' (' + result['MatUnit']+')</label>' +
+                '</div>' +
+                '<div class="editor-field">' +
+                '<input class="form-control text-box single-line" data-val="true" data-val-required="وارد کردن عنوان اجباریست" id="ConfirmAmount" name="ConfirmAmount" type="number" value="' + result['Amount'] + '">' +
+                '<span class="field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true"></span>' +
+                '</div>' +
+                '</div>'
+            );
+            $('#modal2-footer').removeClass('hidden');
+            $('#modalBtnOk2').removeClass('hidden');
+            $('#modalBtnCancel2').removeClass('hidden');
+            $('#modal2-content .modal-dialog').addClass('modal-sm');
+            $('.select2').select2();
+            $('#modal2-content').modal('toggle');           
+
+            $('#modal2-content').on('shown.bs.modal', function (e) {                                
+                $('#modalBtnOk2').click(function () {                                
+                    result['Amount'] = $('#modal2-content #ConfirmAmount').val();                                        
+                    purchaseDocItems.push(result);
+                    openOrders = $.grep(openOrders, function (e) { return e.Id != id })
+                    generateOrderTable();
+                    generatePurchaseDocTable();
+                    $('#modal2-content').modal('toggle');
+                    $(this).off('click');    
+                });         
+                $('#modalBtnCancel2').click(function () {                         
+                    $('#modalBtnOk2').off('click');
+                });         
+                
+                $(this).off('shown.bs.modal');                
+                
+            }); 
+            
+        }
+
+    }
+    function removePurchaseDoc(id) {
+        let result = purchaseDocItems.find(({ Id }) => Id == id);
+        if (result != null) {
+            openOrders.push(result);
+            purchaseDocItems = $.grep(purchaseDocItems, function (e) { return e.Id != id })
+            generateOrderTable();
+            generatePurchaseDocTable();
+        }
+
+    }
+
+
+    function GenerateData() {
+       
+        $.each(purchaseDocItems, function (i, item) {
+            var item = {
+                MatId: item.MatId,
+                Amount: item.Amount,
+                MatOrderDetailId: item.Id
+            }
+
+            MatList.push(item);
+        });
+        var data = {
+            Id: $('#Id').val(),
+            ProviderId: $('#ProviderId').val(),
+            IsAggregated: $('#IsAggregated').val() == '' ? null : $('#IsAggregated').val(),
+            ProjectId: $('#IsAggregated').val() == true ? null : $('#ProjectId').val(),
+            AgentUserId: $('#AgentUserId').val(),
+            Details: MatList
+        }        
+        return data;
+    }
+
+    function SaveRequestToOrder() {
+        if ($('#ProviderId').val() == '') {
+            toastr.error('تامین کننده انتخاب نشده.')
+            return;
+        }
+
+        if ($('#IsAggregated').val() == 'False' && $('#ProjectId').val()=='') {
+            toastr.error('پروژه انتخاب نشده است.')
+            return;
+        }
+        if ($('#AgentUserId').val() == '') {
+            toastr.error('اقدام کننده انتخاب نشده.')
+            return;
+        }
+
+        var Data = GenerateData();
+        //console.log('-------------------------')
+        //console.log(MatList);
+        //console.log('-------------------------')
+        if (MatList.length==0) {
+            toastr.error('هیچ کالایی در لیست دستور خرید وجود ندارد.')
+            return;
+        }
+        
+        $.ajax({
+            url: "/PurchaseDoc/SetOrderToPurchase",
+            data: GenerateData(),
+            cache: false,
+                type: "POST",
+                beforeSend: function () {
+                    $("#overly-loading-modal").removeClass("hidden");
+                },
+                success: function (response) {
+                    if (response.Result == true) {
+                        toastr.success(response.ErrorMessage);
+                        $('#data-table-MatOrderInbox').dataTable().api().ajax.reload();
+                        $('#modal-content').modal('toggle');
+                    }
+                    else {
+                        toastr.error(response.ErrorMessage);
+                    }
+
+                },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(xhr.responseText);
+                },
+            complete: function responce() {
+                $("#overly-loading-modal").addClass("hidden");
+            }
+                });
+
+
+    }
+</script>

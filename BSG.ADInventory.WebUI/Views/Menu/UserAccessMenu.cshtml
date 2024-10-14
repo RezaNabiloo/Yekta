@@ -1,0 +1,52 @@
+﻿@model List<BSG.ADInventory.Models.Menu.MenuListModel>
+@{
+    Layout = null;
+    var chld = 0;
+}
+
+@if (Model != null)
+{
+    foreach (var menu1 in Model.Where(m => m.ParentMenuId == null))
+    {
+
+        <li class="nav-item">
+            @{ chld = Model.Where(a => a.ParentMenuId == menu1.Id).Count();}
+
+            @if (chld == 0)
+            {
+                <a href="@menu1.SpecifiedUrl" class="nav-link">
+                    <i class="nav-icon @menu1.IconClass"></i>
+                    <p>
+                        @menu1.Title
+                    </p>
+                </a>
+            }
+            else
+            {
+                <a href="@menu1.SpecifiedUrl" class="nav-link">
+                    <i class="nav-icon @menu1.IconClass"></i>
+                    <p>
+                        @menu1.Title
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+
+                <ul class="nav nav-treeview">
+                    @foreach (var menu2 in Model.Where(aa => aa.ParentMenuId == menu1.Id).OrderBy(m => m.ViewOrder))
+                    {
+
+                        <li class="nav-item draggable-MenuItem" id="menu-@menu2.Id">
+                            <a href="@menu2.SpecifiedUrl" class="nav-link">
+                                <i class="nav-icon @menu2.IconClass"></i>
+                                <p>@menu2.Title</p>
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            }
+        </li>
+    }
+}
+
+

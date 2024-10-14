@@ -1,0 +1,73 @@
+﻿@model BSG.ADInventory.Models.PurchaseDocAttachment.PurchaseDocAttachmentDataModel
+@using BSG.ADInventory.Resources
+@using BSG.ADInventory.Common.Enum
+@if (ViewBag.Result == true)
+{
+    <script>                
+        toastr.success('@Resource.DataSavedSuccessfully');
+        $('#data-table-PurchaseDoc').dataTable().api().ajax.reload();
+        $('#modal-content').modal('toggle');
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-12">
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.PurchaseDocId)                
+                <div class="editor-label-field col-md-12">
+                    <div class="requiredlable">
+                        @this.Html.LabelFor(model => model.Title)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @this.Html.ValidationMessageFor(model => model.Title)
+                    </div>
+                </div>
+                <div class="editor-label-field col-md-12">
+                    <div class="requiredlable">
+                        @this.Html.LabelFor(model => model.FilePath)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.EditorFor(model => model.FilePath, new { htmlAttributes = new { type = "file" } })
+                        @this.Html.ValidationMessageFor(model => model.FilePath)
+                    </div>
+                    <blockquote class="quote-secondary mt-3 p-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <i class="fad fa-bells fa-lg text-blue"></i>
+                            </div>
+                            <div class="col-md-12">
+                                <p>حداکثر فایل قابل بارگذاری 500 کیلوبایت می‌باشد.</p>
+                            </div>
+                        </div>
+                    </blockquote>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        
+        //check file size
+        $("input[type='file']").on("change", function () {            
+            if (this.files[0].size > 512000) {
+                toastr.error('حجم فایل انتخاب شده بیش از حد مجاز است.');
+                $(this).val('');
+            }
+        });
+    });
+</script>

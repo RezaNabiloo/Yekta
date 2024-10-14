@@ -1,0 +1,200 @@
+﻿@model BSG.ADInventory.Models.Report.FollowPurchaseDocRepParam
+@using BSG.ADInventory.Common.Enum
+@using BSG.ADInventory.Resources
+
+@{ ViewBag.EntityName = "RepFollowPurchaseDoc"; }
+
+<section class="content" style="padding-top:10px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="overlay-wrapper hidden" id="overly-loading-@ViewBag.EntityName">
+                    <div class="overlay flex-column"><i class="fad fa-2x fa-spinner fa-spin"></i><div class="pt-2">@Resource.Loading</div></div>
+                </div>
+                <div class="card card-default">
+                    <div class="card-header">
+                        <div class="row ">
+                            <div class="col-md-3" id="card-title"><h4 class="card-title float-right"><i class="fad fa-bags-shopping fa-lg"></i> @Resource.Report  @Resource.Follow @Resource.PurchaseDoc</h4></div>
+                            <div class="col-md-9 align-content-start" id="card-buttons-@ViewBag.EntityName">
+                                <div class="dt-buttons btn-group flex-wrap float-left dt-buttons-show">
+                                    <button class="btn btn-secondary btn-sm btn-light hidden" type="button" id="dtCopy-@ViewBag.EntityName">
+                                        <span><i class="fal fa-copy fa-lg" data-toggle="tooltip" data-placement="bottom" title="@Resource.Copy"></i></span>
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm btn-light hidden" type="button" id="dtExcel-@ViewBag.EntityName">
+                                        <span><i class="fal fa-file-excel fa-md" data-toggle="tooltip" data-placement="bottom" title="@Resource.Excel"></i></span>
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm btn-light" onclick="PrintRepListFollowPurchaseDoc();">
+                                        <span><i class="fal fa-print fa-md" data-toggle="tooltip" data-placement="bottom" title="@Resource.Print"></i></span>
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm btn-light" onclick="ShowRepListFollowPurchaseDoc();">
+                                        <span><i class="fas fa-command fa-md fa-beat-fade text-primary" data-toggle="tooltip" data-placement="bottom" title="@Resource.RunReport"></i></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-2 col-xl-2 col-md-3" id="paramBox-@ViewBag.Entity">
+                                <div class="editor-label-field col-md-12">
+                                    <div class="requiredlable">
+                                        @this.Html.LabelFor(model => model.StartDate)
+                                    </div>
+                                    <div class="editor-field">
+                                        @Html.EditorFor(model => model.StartDate, new { HtmlAttributes = new { @class = "form-control" } })
+                                        @this.Html.ValidationMessageFor(model => model.StartDate)
+                                    </div>
+                                </div>
+                                <div class="editor-label-field col-md-12">
+                                    <div class="requiredlable">
+                                        @this.Html.LabelFor(model => model.EndDate)
+                                    </div>
+                                    <div class="editor-field">
+                                        @Html.EditorFor(model => model.EndDate, new { HtmlAttributes = new { @class = "form-control" } })
+                                        @this.Html.ValidationMessageFor(model => model.EndDate)
+                                    </div>
+                                </div>
+                                <div class="editor-label-field col-md-12">
+                                    <div class="requiredlable">
+                                        @this.Html.LabelFor(model => model.PurchaseDocId)
+                                    </div>
+                                    <div class="editor-field">
+                                        @Html.EditorFor(model => model.PurchaseDocId, new { HtmlAttributes = new { @class = "form-control" } })
+                                        @this.Html.ValidationMessageFor(model => model.PurchaseDocId)
+                                    </div>
+                                </div>
+                                <div class="editor-label-field col-md-12">
+                                    <div class="requiredlable">
+                                        @this.Html.LabelFor(model => model.MatId)
+                                    </div>
+                                    <div class="editor-field">
+                                        @Html.EditorFor(model => model.MatId, new { HtmlAttributes = new { @class = "form-control" } })
+                                        @this.Html.ValidationMessageFor(model => model.MatId)
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <fieldset class="form-group border pr-2 pt-0 pb-3">
+                                        <legend class="w-auto px-2">
+                                            @this.Html.Label(Resource.ReportType)
+                                        </legend>
+                                        <!-- radio -->
+
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="@ViewBag.EntityName" value="1" checked="">
+                                            <label class="form-check-label">پیگیری دستور خرید</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="@ViewBag.EntityName" value="2">
+                                            <label class="form-check-label">جزئیات دستور خرید</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="@ViewBag.EntityName" value="3">
+                                            <label class="form-check-label">تراکنش‌های انبار</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="@ViewBag.EntityName" value="4">
+                                            <label class="form-check-label">تراکنش‌های دریافت</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="@ViewBag.EntityName" value="5">
+                                            <label class="form-check-label">تراکنش‌های توزیع</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="@ViewBag.EntityName" value="6">
+                                            <label class="form-check-label">تراکنش‌های خروج</label>
+                                        </div>
+
+
+                                    </fieldset>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-10 col-xl-10 col-md-9" id="dataBox-@ViewBag.EntityName">
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+<script>
+    function ShowRepListFollowPurchaseDoc() {
+        var entity = '@ViewBag.EntityName';
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Report/ShowFollowPurchaseDoc",
+                data: GenerateDataParamRepFollowPurchaseDoc(),
+                beforeSend: function () {
+                    $("#overly-loading-"+entity).fadeIn();
+                },
+                success: function (result) {
+                    $('#dataBox-' + entity).html(result);
+                    $('#dtCopy-' + entity).fadeIn();
+                    $('#dtExcel-' + entity).fadeIn();
+                    $('#dtPDF-' + entity).fadeIn();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error('@Resource.ErrorCallAdmin');
+                },
+                complete(result) {
+                    $("#overly-loading-" + entity).fadeOut();
+                }
+            });
+        }
+
+    function PrintRepListFollowPurchaseDoc()
+    {
+            var entity = '@ViewBag.EntityName';
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                url: '/Report/PrintFollowPurchaseDoc',
+                data: GenerateDataParamRepFollowPurchaseDoc(),
+                 beforeSend: function () {
+                     $("#overly-loading-" + entity).fadeIn();
+                     $('#dtCopy-' + entity).fadeOut();
+                     $('#dtExcel-' + entity).fadeOut();
+                     $('#dtPDF-' + entity).fadeOut();
+                 },
+                success: function (result) {
+                    $('#dataBox-' + entity).html(result);
+                     $('.stiJsViewerPage').css('direction', 'rtl');
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error('@Resource.ErrorCallAdmin' + '\n' + xhr.error);
+                },
+                complete(result) {
+                    $("#overly-loading-" + entity).fadeOut();
+                }
+             });
+
+
+    }
+
+    function GenerateDataParamRepFollowPurchaseDoc() {
+
+        var Data = {
+            StartDateStringVal: $("#paramBox-@ViewBag.Entity #StartDate").val(),
+            EndDateStringVal: $("#paramBox-@ViewBag.Entity #EndDate").val(),
+            PurchaseDocId: $("#paramBox-@ViewBag.Entity #PurchaseDocId").val(),
+            MatId: $("#paramBox-@ViewBag.Entity #MatId").val(),
+            ReportType: $("#paramBox-@ViewBag.Entity input[name='@ViewBag.EntityName']:checked").val()
+        }
+        return Data;
+    }
+
+</script>
+

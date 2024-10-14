@@ -1,0 +1,67 @@
+﻿@model BSG.ADInventory.Entities.Brand
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "Brand";}
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-'+'@ViewBag.EntityName').dataTable().api().ajax.reload();
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+            <div class="editor-label-field col-md-6">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.FaTitle, new { @class = "required" })
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.FaTitle,new {Htmlattributes=new { @class="form-control"} })
+                    @this.Html.ValidationMessageFor(model => model.FaTitle)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-6">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.EnTitle)
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.EnTitle,new { HtmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.EnTitle)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-6">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.IsActive)
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.IsActive, new List<SelectListItem>()
+                    {
+                       new SelectListItem() { Text = Resource.Active, Value = "True" },
+                       new SelectListItem() { Text = Resource.InActive, Value = "False"}
+                    }, new { @id = "IsActive", @class = "form-control" })
+                    @this.Html.ValidationMessageFor(model => model.IsActive)
+                </div>
+            </div>
+            <div class="editor-label-field col-md-6">
+                <div class="requiredlable">
+                    @this.Html.LabelFor(model => model.Description)
+                </div>
+                <div class="editor-field">
+                    @this.Html.EditorFor(model => model.Description, new { HtmlAttributes = new { @class = "form-control" } })
+                    @this.Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+}
+

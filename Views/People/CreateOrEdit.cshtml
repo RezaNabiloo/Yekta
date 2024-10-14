@@ -1,0 +1,161 @@
+﻿@model BSG.ADInventory.Entities.People
+@using BSG.ADInventory.Resources
+@using BSG.ADInventory.Common.Enum
+@{ViewBag.EntityName = "People";}
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-'+'@ViewBag.EntityName').dataTable().api().ajax.reload();
+    </script>
+}
+else
+{
+
+    <div class="form-group">
+        <div class="form-group form-group-entry col-md-12">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="editor-label-field col-md-12">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.PeopleType, new { @class = "required" })
+                            </div>
+                            <div class="editor-field">
+                                @Html.DropDownListFor(model => model.PeopleType, EnumHelper.GetSelectList(typeof(PeopleType)), Resource.Select)
+                                @this.Html.ValidationMessageFor(model => model.PeopleType)
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-12">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.ImageUrl)
+                            </div>
+                            <div class="editor-field">
+                                @this.Html.EditorFor(model => model.ImageUrl)
+                                @this.Html.ValidationMessageFor(model => model.ImageUrl)
+                            </div>
+                            <blockquote>
+                                <p><i class="fad fa-message-exclamation fa-2x text-blue"></i> <b>توجه</b></p>
+                                <small class="text-blue">جهت نمایش بهتر تصاویر، اندازه آنها 200×200 پیکسل در نظر گرفته شود.</small>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.FirstName, new { @class = "required" })
+                            </div>
+                            <div class="editor-field">
+                                @this.Html.EditorFor(model => model.FirstName)
+                                @this.Html.ValidationMessageFor(model => model.FirstName)
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.LastName, new { @class = "required" })
+                            </div>
+                            <div class="editor-field">
+                                @this.Html.EditorFor(model => model.LastName)
+                                @this.Html.ValidationMessageFor(model => model.LastName)
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.FatherName)
+                            </div>
+                            <div class="editor-field">
+                                @this.Html.EditorFor(model => model.FatherName)
+                                @this.Html.ValidationMessageFor(model => model.FatherName)
+                            </div>
+                        </div>
+
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.Gender, new { @class = "required" })
+                            </div>
+                            <div class="editor-field">
+                                @Html.DropDownListFor(model => model.Gender, EnumHelper.GetSelectList(typeof(Gender)), @Resource.Select)
+                                @this.Html.ValidationMessageFor(model => model.Gender)
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.NationalCode)
+                            </div>
+                            <div class="editor-field">
+                                @this.Html.EditorFor(model => model.NationalCode)
+                                @this.Html.ValidationMessageFor(model => model.NationalCode)
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.IdNo)
+                            </div>
+                            <div class="editor-field">
+                                @this.Html.EditorFor(model => model.IdNo)
+                                @this.Html.ValidationMessageFor(model => model.IdNo)
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.BirthDate)
+                            </div>
+                            <div class="editor-field">
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.BirthDate, new { @class = "form-control" })
+                                    @this.Html.ValidationMessageFor(model => model.BirthDate)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.IsActive)
+                            </div>
+                            <div class="editor-field">
+                                @Html.DropDownListFor(model => model.IsActive, new List<SelectListItem>()
+                                {
+                                   new SelectListItem() { Text = Resource.Active, Value = "True" },
+                                   new SelectListItem() { Text = Resource.InActive, Value = "False"}
+                                }, new { @id = "IsActive", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-3">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.PhoneNumber)
+                            </div>
+                            <div class="editor-field">
+                                @this.Html.EditorFor(model => model.PhoneNumber)
+                            </div>
+                        </div>
+                        <div class="editor-label-field col-md-9">
+                            <div class="requiredlable">
+                                @this.Html.LabelFor(model => model.Address)
+                            </div>
+                            <div class="editor-field">
+                                @this.Html.EditorFor(model => model.Address)
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr />
+                    <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+
+    });
+</script>

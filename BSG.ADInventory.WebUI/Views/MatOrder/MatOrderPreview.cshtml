@@ -1,0 +1,187 @@
+﻿@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "MatOrderPreview";}
+@model BSG.ADInventory.Entities.MatOrder
+@{ var row = 0;}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            @Html.HiddenFor(model => model.Id)
+            <div class="col-md-4">
+                <p class="pb-0">@this.Html.LabelFor(model => model.ProjectId): @Html.DisplayFor(model => model.Project.Title)</p>
+            </div>
+            <div class="col-md-4">
+                <p class="pb-0">@this.Html.Label(Resource.RequestedUser): @Html.DisplayFor(model => model.CreateUser.People.FullName)</p>
+            </div>
+            <div class="col-md-4">
+                <p class="pb-0">@this.Html.LabelFor(model => model.RequiredDate): <span>@Model.RequiredDate.ToShortDateString() </span></p>
+            </div>
+            <div class="col-md-8">
+                <p class="pb-0">@this.Html.LabelFor(model => model.RequestDescription): @Html.DisplayFor(model => model.RequestDescription)</p>
+            </div>
+            <div class="col-md-4">
+                <p class="pb-0">
+                    @this.Html.LabelFor(model => model.ConfirmStatus):
+                    @switch (Model.ConfirmStatus)
+                    {
+                        case BSG.ADInventory.Common.Enum.ConfirmStatus.Pending:
+                            <span class="fad fa-spinner fa-spin fa-2x"></span> @Resource.Waiting
+                            break;
+                        case BSG.ADInventory.Common.Enum.ConfirmStatus.Confirmed:
+                            <span class="fas fa-check fa-2x text-success"></span> @Resource.Confirmed
+                            break;
+                        case BSG.ADInventory.Common.Enum.ConfirmStatus.Rejected:
+                            <span class="fas fa-times fa-2x text-danger"></span> @Resource.Rejected
+                            break;
+                        default:
+                            break;
+                    }
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+
+        <div class="form-group table-responsive">
+            <table id="data-table-@ViewBag.EntityName" class="display nowrap table-hover table-striped">
+                <thead>
+                    <tr class="fit">
+                        <th>@Resource.Row</th>
+                        <th>@Resource.MatCode</th>
+                        <th>@Html.DisplayName(Resource.MatDescription)</th>
+                        <th>@Html.DisplayName(Resource.RequestedAmount)</th>
+                        <th>@Html.DisplayName(Resource.ConfirmedAmount)</th>
+                        <th>@Html.DisplayName(Resource.RequestDescription)</th>
+                        <th>@Html.DisplayName(Resource.ConfirmDescription)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.MatOrderDetails.ToList())
+                    {
+                        <tr class="fit">
+                            @{row++;}
+                            <td>@row</td>
+                            <td>@item.MatId</td>
+                            <td>@item.Mat.Title - @item.Mat.TechnicalSpec</td>
+                            <td>@item.RequiredAmount  <small>@item.Mat.MatUnit.Title</small></td>
+                            <td>@item.ConfirmedAmount  <small>@item.Mat.MatUnit.Title</small></td>
+                            <td>@item.Description</td>
+                            <td>@item.ConfirmDescription</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <hr />
+        <p class="pb-0">@this.Html.LabelFor(model => model.ConfirmDescription): @Html.DisplayFor(model => model.ConfirmDescription)</p>
+    </div>
+</div>
+<script>
+      $(document).ready(function () {
+          var entity = '@ViewBag.EntityName';
+          $('body .dropdown-toggle').dropdown();
+
+        $('#data-table-' + entity + ' thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#data-table-' + entity + ' thead');
+
+        table = $('#data-table-' + entity).DataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            scrollX: true,
+            response: true,
+            lengthMenu: [[10, 25, 50, 100, 1000], [10, 25, 50, 100, 1000]],
+            dom: 'lfBrtip',
+            buttons: [
+                 { extend: 'copy', exportOptions: { columns: ':visible' } },
+                { extend: 'excel', exportOptions: {columns: ':visible' } },
+                {
+                    extend: 'print',
+                    exportOptions: { columns: ':visible' },
+                    title: '<div><p class="text-center">@Resource.Details @Resource.Request @Model.Id -- @Resource.Date: @Model.CreateTime.ToShortDateString()</p><hr/></div>',
+                },
+                'colvis',                
+            ],
+            retrieve: true,
+            Response: true,
+            order: [0, 'asc'],
+            bProcessing: true,
+            language: { url: '/Content/plugins/datatables/fa.json' },
+            bFilter: true,
+            bServerSide: false,            
+            fnCreatedRow: function (nRow, aData, iDataIndex) {$(nRow).attr('id', 'row-' + entity + '-' + aData['Id']);},
+          
+            columnDefs: [
+                { "width": "50px", "targets": 0 },
+                { "width": "50px", "targets": 1 }
+            ],
+            initComplete: function () {
+
+                var api = this.api();
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('#data-table-' + entity + '_wrapper .filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" class="form-control" placeholder=" " />');
+
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('#data-table-' + entity + '_wrapper .filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            //? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            ? regexr.replace('{search}', this.value).replace('(', '').replace(')', '')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keydown', function (e) {
+                                if (e.key == '13') {
+                                    e.stopPropagation();
+
+                                    $(this).trigger('change');
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                }
+
+                            });
+                    });
+
+
+                $('#data-table-' + entity + '_wrapper > .dt-buttons').appendTo('#modal-dialog-data-table-buttons');
+                $('.dt-buttons').addClass('float-left dt-buttons-show');
+                $('.dt-buttons button').addClass('btn btn-sm btn-light');
+                $('#data-table-' + entity + '_wrapper tr.filters').fadeIn(1000);
+                table.columns.adjust();
+            },
+        });
+
+    });
+</script>
+
+
+

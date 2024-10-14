@@ -1,0 +1,16 @@
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Resources\bin\Release\BSG.ADInventory.Resources.dll
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Resources\bin\Release\BSG.ADInventory.Resources.pdb
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.csproj.AssemblyReference.cache
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.Resource.resources
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.csproj.GenerateResource.cache
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.csproj.CoreCompileInputs.cache
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.dll
+D:\MyApplications\Projects\ADInventory\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.pdb
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Resources\bin\Release\BSG.ADInventory.Resources.dll
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Resources\bin\Release\BSG.ADInventory.Resources.pdb
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.csproj.AssemblyReference.cache
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.Resource.resources
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.csproj.GenerateResource.cache
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.csproj.CoreCompileInputs.cache
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.dll
+D:\MyApplications\Projects\ADInventory_NewVer\BSG.ADInventory.Resources\obj\Release\BSG.ADInventory.Resources.pdb

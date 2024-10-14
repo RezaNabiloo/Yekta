@@ -1,0 +1,102 @@
+﻿@model BSG.ADInventory.Models.Role.RoleModel
+@using BSG.ADInventory.Resources
+@{ViewBag.EntityName = "Role";}
+@{
+    var categoryId = 0;
+}
+
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-'+'@ViewBag.EntityName').dataTable().api().ajax.reload();
+    </script>
+}
+else
+{
+    <div class="form-group">
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="col-md-6">
+                    <div class="editor-label">
+                        @this.Html.LabelFor(model => model.Name)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.EditorFor(model => model.Name)
+                        @this.Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-12 mt-3">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <label><i class="fad fa-shield-quartered fa-2x text-gt-blue"></i> @Resource.Permissions</label>
+                        </div>
+                        <div>
+                            @for (int i = 0; i < Model.Permissions.Count(); i++)
+                            {
+                                if (categoryId != Model.Permissions[i].CategoryId)
+                                {
+                                    categoryId = Model.Permissions[i].CategoryId;
+                                    <div class="card card-default">
+                                        <div class="card-header">
+                                            <h6 class="card-title text-gt-blue text-bold"> @Model.Permissions[i].Category</h6>
+
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                    <i class="fas fa-minus text-gt-blue"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <div class="card-body" style="display: block;">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    @for (int j = i; j < Model.Permissions.Count() && categoryId == Model.Permissions[j].CategoryId; j++)
+                                                    {
+                                                        <div class="form-group">
+                                                            <div class="custom-control custom-switch">
+                                                                @Html.CheckBoxFor(model => model.Permissions[i].IsSelected, new { @class = "custom-control-input float-right" })
+                                                                @Html.LabelFor(model => model.Permissions[i].IsSelected, new { @class = "custom-control-label float-right" })
+                                                                <p class="float-right"><b class="text-blue">@Model.Permissions[i].Description : </b>@Model.Permissions[i].HelpDescription</p>
+                                                            </div>
+                                                        </div>
+                                                        @Html.HiddenFor(model => model.Permissions[i].PermissionId)
+                                                        @Html.HiddenFor(model => model.Permissions[i].CategoryId)
+                                                        @Html.HiddenFor(model => model.Permissions[i].Category)
+                                                        @Html.HiddenFor(model => model.Permissions[i].HelpDescription)
+                                                        @Html.HiddenFor(model => model.Permissions[i].Description)
+                                                        i = i + 1;
+                                                    }
+                                                    @{i = i - 1;}
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+            </div>
+        </div>
+    </div>
+}
+

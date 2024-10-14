@@ -1,0 +1,54 @@
+﻿@model BSG.ADInventory.Models.People.PeopleSignatureDataModel
+@using BSG.ADInventory.Resources
+@using BSG.ADInventory.Common.Enum
+@{ViewBag.EntityName = "People";}
+@if (ViewBag.Result == true)
+{
+    <script>
+                $('#modal-content').modal('toggle');
+                toastr.success('@Resource.DataSavedSuccessfully');
+                $('#data-table-'+'@ViewBag.EntityName').dataTable().api().ajax.reload();
+    </script>
+}
+else
+{
+
+    <div class="form-group">
+        <div class="form-group form-group-entry col-md-12">
+            <div class="row">
+                <div class="editor-label-field col-md-12">
+                    <div class="requiredlable">
+                        @this.Html.LabelFor(model => model.SignatureImageUrl)
+                    </div>
+                    <div class="editor-field">
+                        @this.Html.EditorFor(model => model.SignatureImageUrl)
+                        @this.Html.ValidationMessageFor(model => model.SignatureImageUrl)
+                    </div>
+                    <blockquote>
+                        <p><i class="fad fa-message-exclamation fa-2x text-blue"></i> <b>توجه</b></p>
+                        <small class="text-blue">جهت نمایش بهتر تصاویر امضاء، اندازه آنها 200×200 پیکسل در نظر گرفته شود.</small>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr />
+                    <button type="submit" class="btn btn-default btn-sm"><span class="fal fa-check fa-md text-green"></span> @Resource.Save</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fal fa-times la-md text-red"></span> @Resource.Close </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+
+        //check file size
+        $("input[type='file']").on("change", function () {
+            if (this.files[0].size > 512000) {
+                toastr.error('حجم فایل انتخاب شده بیش از حد مجاز است.');
+                $(this).val('');
+            }
+        });
+    });
+</script>

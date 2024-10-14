@@ -1,0 +1,27 @@
+﻿@model string
+@using BSG.ADInventory.Resources
+<div class="form-groups">
+    @Html.HiddenFor(model => model, new { id = "imgEdit" })
+
+    <div id="firstImg" class="fileupload fileupload-new" data-provides="fileupload">
+
+        <div id="secondImg" class="fileupload-new thumbnail" style="max-width: 75px; height: 75px;">
+
+            <img src="@Url.Content(Model==null?"~/Images/noimage.png":Model)" alt="" />
+
+        </div>
+        <div id="showimg" class="fileupload-preview fileupload-exists thumbnail" style="max-width: 75px; max-height: 75px; line-height: 20px;">
+
+        </div>
+
+        <div>
+            <span class="btn btn-white btn-file">
+                <span class="btn btn-default btn-sm fileupload-new"><i class="fal fa-paperclip fa-sm"></i> @Resource.SelectImage</span>
+                <span class="btn btn-default btn-sm fileupload-exists"><i class="fal fa-refresh fa-sm"></i> @Resource.ChangeImage</span>
+                <input id="ImageUrl" name="ImageUrl" type="file" class="default" />
+            </span>
+            <a href="#" id="remove" class="btn btn-danger btn-sm fileupload-exists" data-dismiss="fileupload"><i class="fal fa-trash-alt fa-sm"></i> @Resource.Delete</a>
+        </div>
+    </div>
+
+</div>
